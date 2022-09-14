@@ -10,7 +10,8 @@ import UIKit
 class MainVC: UIViewController {
   // Stores my balance cards
   let balanceStack = UIStackView()
-  //
+  // Currencies the app supports
+
   override func viewDidLoad() {
     super.viewDidLoad()
   }

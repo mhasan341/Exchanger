@@ -15,6 +15,7 @@
 		51AF611F28D1CB85003DCBC6 /* BalanceCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AF611E28D1CB85003DCBC6 /* BalanceCardView.swift */; };
 		51AF612328D1CD78003DCBC6 /* TitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AF612228D1CD78003DCBC6 /* TitleLabel.swift */; };
 		51AF612528D1CD8D003DCBC6 /* SecondaryTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AF612428D1CD8D003DCBC6 /* SecondaryTitleLabel.swift */; };
+		51AF612A28D1CFB7003DCBC6 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AF612928D1CFB7003DCBC6 /* Currency.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		51AF611E28D1CB85003DCBC6 /* BalanceCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceCardView.swift; sourceTree = "<group>"; };
 		51AF612228D1CD78003DCBC6 /* TitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleLabel.swift; sourceTree = "<group>"; };
 		51AF612428D1CD8D003DCBC6 /* SecondaryTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryTitleLabel.swift; sourceTree = "<group>"; };
+		51AF612928D1CFB7003DCBC6 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +62,7 @@
 		51AF610428D1970B003DCBC6 /* Exchanger */ = {
 			isa = PBXGroup;
 			children = (
+				51AF612828D1CFA8003DCBC6 /* model */,
 				51AF611D28D1CA36003DCBC6 /* controller */,
 				51AF611C28D1CA29003DCBC6 /* view */,
 				51AF610528D1970B003DCBC6 /* AppDelegate.swift */,
@@ -103,6 +106,14 @@
 				51AF612428D1CD8D003DCBC6 /* SecondaryTitleLabel.swift */,
 			);
 			path = label;
+			sourceTree = "<group>";
+		};
+		51AF612828D1CFA8003DCBC6 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				51AF612928D1CFB7003DCBC6 /* Currency.swift */,
+			);
+			path = model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -201,6 +212,7 @@
 				51AF611B28D1C9AA003DCBC6 /* MainVC.swift in Sources */,
 				51AF610828D1970B003DCBC6 /* SceneDelegate.swift in Sources */,
 				51AF612328D1CD78003DCBC6 /* TitleLabel.swift in Sources */,
+				51AF612A28D1CFB7003DCBC6 /* Currency.swift in Sources */,
 				51AF611F28D1CB85003DCBC6 /* BalanceCardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
