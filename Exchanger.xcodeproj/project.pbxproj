@@ -12,6 +12,9 @@
 		51AF610F28D1970C003DCBC6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 51AF610E28D1970C003DCBC6 /* Assets.xcassets */; };
 		51AF611228D1970C003DCBC6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 51AF611028D1970C003DCBC6 /* LaunchScreen.storyboard */; };
 		51AF611B28D1C9AA003DCBC6 /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AF611A28D1C9AA003DCBC6 /* MainVC.swift */; };
+		51AF611F28D1CB85003DCBC6 /* BalanceCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AF611E28D1CB85003DCBC6 /* BalanceCardView.swift */; };
+		51AF612328D1CD78003DCBC6 /* TitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AF612228D1CD78003DCBC6 /* TitleLabel.swift */; };
+		51AF612528D1CD8D003DCBC6 /* SecondaryTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AF612428D1CD8D003DCBC6 /* SecondaryTitleLabel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +25,9 @@
 		51AF611128D1970C003DCBC6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		51AF611328D1970C003DCBC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51AF611A28D1C9AA003DCBC6 /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
+		51AF611E28D1CB85003DCBC6 /* BalanceCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceCardView.swift; sourceTree = "<group>"; };
+		51AF612228D1CD78003DCBC6 /* TitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleLabel.swift; sourceTree = "<group>"; };
+		51AF612428D1CD8D003DCBC6 /* SecondaryTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryTitleLabel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,14 +60,49 @@
 		51AF610428D1970B003DCBC6 /* Exchanger */ = {
 			isa = PBXGroup;
 			children = (
+				51AF611D28D1CA36003DCBC6 /* controller */,
+				51AF611C28D1CA29003DCBC6 /* view */,
 				51AF610528D1970B003DCBC6 /* AppDelegate.swift */,
 				51AF610728D1970B003DCBC6 /* SceneDelegate.swift */,
 				51AF610E28D1970C003DCBC6 /* Assets.xcassets */,
 				51AF611028D1970C003DCBC6 /* LaunchScreen.storyboard */,
 				51AF611328D1970C003DCBC6 /* Info.plist */,
-				51AF611A28D1C9AA003DCBC6 /* MainVC.swift */,
 			);
 			path = Exchanger;
+			sourceTree = "<group>";
+		};
+		51AF611C28D1CA29003DCBC6 /* view */ = {
+			isa = PBXGroup;
+			children = (
+				51AF612628D1CD9B003DCBC6 /* widget */,
+				51AF611E28D1CB85003DCBC6 /* BalanceCardView.swift */,
+			);
+			path = view;
+			sourceTree = "<group>";
+		};
+		51AF611D28D1CA36003DCBC6 /* controller */ = {
+			isa = PBXGroup;
+			children = (
+				51AF611A28D1C9AA003DCBC6 /* MainVC.swift */,
+			);
+			path = controller;
+			sourceTree = "<group>";
+		};
+		51AF612628D1CD9B003DCBC6 /* widget */ = {
+			isa = PBXGroup;
+			children = (
+				51AF612728D1CDA6003DCBC6 /* label */,
+			);
+			path = widget;
+			sourceTree = "<group>";
+		};
+		51AF612728D1CDA6003DCBC6 /* label */ = {
+			isa = PBXGroup;
+			children = (
+				51AF612228D1CD78003DCBC6 /* TitleLabel.swift */,
+				51AF612428D1CD8D003DCBC6 /* SecondaryTitleLabel.swift */,
+			);
+			path = label;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -155,9 +196,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51AF612528D1CD8D003DCBC6 /* SecondaryTitleLabel.swift in Sources */,
 				51AF610628D1970B003DCBC6 /* AppDelegate.swift in Sources */,
 				51AF611B28D1C9AA003DCBC6 /* MainVC.swift in Sources */,
 				51AF610828D1970B003DCBC6 /* SceneDelegate.swift in Sources */,
+				51AF612328D1CD78003DCBC6 /* TitleLabel.swift in Sources */,
+				51AF611F28D1CB85003DCBC6 /* BalanceCardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
