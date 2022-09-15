@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5155C7F228D395AE00E0A263 /* MainVC+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5155C7F128D395AE00E0A263 /* MainVC+Ext.swift */; };
 		51AF610628D1970B003DCBC6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AF610528D1970B003DCBC6 /* AppDelegate.swift */; };
 		51AF610828D1970B003DCBC6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AF610728D1970B003DCBC6 /* SceneDelegate.swift */; };
 		51AF610F28D1970C003DCBC6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 51AF610E28D1970C003DCBC6 /* Assets.xcassets */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5155C7F128D395AE00E0A263 /* MainVC+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainVC+Ext.swift"; sourceTree = "<group>"; };
 		51AF610228D1970B003DCBC6 /* Exchanger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Exchanger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		51AF610528D1970B003DCBC6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		51AF610728D1970B003DCBC6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -43,6 +45,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5155C7F028D3959F00E0A263 /* extension */ = {
+			isa = PBXGroup;
+			children = (
+				5155C7F128D395AE00E0A263 /* MainVC+Ext.swift */,
+			);
+			path = extension;
+			sourceTree = "<group>";
+		};
 		51AF60F928D1970B003DCBC6 = {
 			isa = PBXGroup;
 			children = (
@@ -62,6 +72,8 @@
 		51AF610428D1970B003DCBC6 /* Exchanger */ = {
 			isa = PBXGroup;
 			children = (
+				5155C7F028D3959F00E0A263 /* extension */,
+				51AF612B28D1D006003DCBC6 /* util */,
 				51AF612828D1CFA8003DCBC6 /* model */,
 				51AF611D28D1CA36003DCBC6 /* controller */,
 				51AF611C28D1CA29003DCBC6 /* view */,
@@ -114,6 +126,13 @@
 				51AF612928D1CFB7003DCBC6 /* Currency.swift */,
 			);
 			path = model;
+			sourceTree = "<group>";
+		};
+		51AF612B28D1D006003DCBC6 /* util */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = util;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,6 +231,7 @@
 				51AF611B28D1C9AA003DCBC6 /* MainVC.swift in Sources */,
 				51AF610828D1970B003DCBC6 /* SceneDelegate.swift in Sources */,
 				51AF612328D1CD78003DCBC6 /* TitleLabel.swift in Sources */,
+				5155C7F228D395AE00E0A263 /* MainVC+Ext.swift in Sources */,
 				51AF612A28D1CFB7003DCBC6 /* Currency.swift in Sources */,
 				51AF611F28D1CB85003DCBC6 /* BalanceCardView.swift in Sources */,
 			);
