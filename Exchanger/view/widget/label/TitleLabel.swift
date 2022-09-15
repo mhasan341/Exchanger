@@ -17,10 +17,10 @@ class TitleLabel: UILabel {
     fatalError("init(coder:) has not been implemented")
   }
 
-  convenience init(fontSize: CGFloat, fontColor: UIColor = .black) {
+  convenience init(size: CGFloat, color: UIColor = .black, weight: UIFont.Weight = .regular) {
     self.init(frame: .zero)
-    self.font = UIFont.systemFont(ofSize: fontSize, weight: .medium)
-    textColor = fontColor
+    self.font = UIFont.systemFont(ofSize: size, weight: weight)
+    textColor = color
   }
 
   private func configure() {
