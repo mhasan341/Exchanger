@@ -14,11 +14,11 @@ class BalanceCardCell: UICollectionViewCell {
   private let contentPadding: CGFloat = 10
   private let cornerRadius: CGFloat = 8
   /// Holds the symbol of the currency, eg: $
-  private let symbolLabel = TitleLabel(fontSize: 24, fontColor: .white)
+  private let symbolLabel = TitleLabel(size: 24, color: .white, weight: .bold)
   /// Holds the abbr of the currency name, eg: USD
-  private let abbrLabel = SecondaryTitleLabel(fontSize: 20)
+  private let abbrLabel = TitleLabel(size: 20, color: .black, weight: .heavy)
   /// Holds the current balance of this currency, eg: "1000"
-  private let balanceLabel = TitleLabel(fontSize: 20, fontColor: .white)
+  private let balanceLabel = TitleLabel(size: 20, color: .white, weight: .semibold)
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -35,13 +35,7 @@ class BalanceCardCell: UICollectionViewCell {
     addSubview(abbrLabel)
     addSubview(balanceLabel)
 
-    // for rounder corners
-    layer.cornerRadius = cornerRadius
-    layer.masksToBounds = true
-
-    // change these two value
-    symbolLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
-    balanceLabel.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+    abbrLabel.alpha = 0.2
 
     NSLayoutConstraint.activate([
       symbolLabel.topAnchor.constraint(equalTo: topAnchor, constant: contentPadding),
@@ -53,12 +47,12 @@ class BalanceCardCell: UICollectionViewCell {
       balanceLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -contentPadding),
       balanceLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -contentPadding)
     ])
+    balanceLabel.addShadow()
   }
 
-  /// We're adding a shadow and background for better UI
   override func layoutSubviews() {
     super.layoutSubviews()
-    self.addGradientBackground()
+    addGradientBackground()
     addShadow()
   }
 

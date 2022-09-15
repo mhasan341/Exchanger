@@ -27,9 +27,29 @@ enum Utils {
     let section = NSCollectionLayoutSection(group: group)
     section.interGroupSpacing = 10
     section.orthogonalScrollingBehavior = .continuous
-
+    section.boundarySupplementaryItems = [getSectionHeader()]
     let layout = UICollectionViewCompositionalLayout(section: section)
     return layout
+  }
+
+  // MARK: For Header
+  static func getSize() -> NSCollectionLayoutSize {
+    return NSCollectionLayoutSize(
+      widthDimension: .fractionalWidth(1.0),
+      heightDimension: .estimated(10) // was 20
+    )
+  }
+
+  static func getSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
+    let header = NSCollectionLayoutBoundarySupplementaryItem(
+      layoutSize: getSize(),
+      elementKind: UICollectionView.elementKindSectionHeader,
+      alignment: .top
+    )
+
+    header.pinToVisibleBounds = true
+
+    return header
   }
 
   /// creates currency symbol, initial balance, and abbr

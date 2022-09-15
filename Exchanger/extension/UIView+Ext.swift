@@ -13,6 +13,8 @@ extension UIView {
     let colorRight = UIColor.systemRed.cgColor
 
     let gradientLayer = CAGradientLayer()
+    gradientLayer.cornerRadius = 10
+    gradientLayer.masksToBounds = true
     gradientLayer.colors = [colorLeft, colorRight]
     gradientLayer.locations = [0.0, 1.0]
     gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
@@ -22,9 +24,10 @@ extension UIView {
   }
 
   func addShadow() {
-    layer.shadowColor = UIColor.black.cgColor
-    layer.shadowOffset = CGSize(width: 1, height: 1)
+    layer.shadowColor = UIColor.label.cgColor
+    layer.shadowOffset = CGSize(width: 2, height: 2)
     layer.shadowRadius = 2.0
-    layer.shadowOpacity = 0.2
+    layer.shadowOpacity = 0.3
+    layer.masksToBounds = false
   }
 }
