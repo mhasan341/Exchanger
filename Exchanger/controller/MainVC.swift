@@ -17,14 +17,19 @@ class MainVC: UIViewController {
   var currencyAmountTF: UITextField!
   // to exchange the currency
   var exchangeButton: UIButton!
+  // just an ordinary activity indicator
+  var activityIndicator: UIActivityIndicatorView!
   // swiftlint:enable implicitly_unwrapped_optional
   // Currencies the app supports
   var availableCurrencies = Utils.availableCurrencies()
   // to store our cancellables
   private var cancellables = Set<AnyCancellable>()
+  // to update our activity indicator
+  var activityPublisher = PassthroughSubject<Bool, Never>()
+
   /// title for second section
   let exchangeTitle = TitleLabel(size: 20)
-  let messageTitle = TitleLabel(size: 16, color: .systemOrange)
+  let messageTitle = TitleLabel(size: 14, color: .systemOrange)
   /// button for the from menu
   lazy var fromCurrencyButton: UIButton = {
     let button = UIButton(frame: .zero)
@@ -58,9 +63,33 @@ class MainVC: UIViewController {
   /// to store the value of "To"
   ///  Using EUR as the second, since we'll have at least two currency to exchange
   @Published var toCurrency: String = "EUR"
+  /// to store the currencyAmount user inputed on our TF
+  @Published var amountOfExchange: Double = 0
 
   /// Constant for padding/margining views
   let contentPadding: CGFloat = 20
+
+  /// validates our currency input and updates the UI according to the value
+  var validateCurrencyAmount: AnyPublisher<Double, Never> {
+    return $amountOfExchange.map { value in
+      guard value > 0 else {
+        DispatchQueue.main.async {
+          self.messageTitle.text = "Enter a valid amount"
+          self.messageTitle.textColor = .systemOrange
+          self.activityPublisher.send(false)
+        }
+        return 0
+      }
+
+      DispatchQueue.main.async {
+        self.messageTitle.text = "Ready to fire!"
+        self.messageTitle.textColor = .systemOrange
+      }
+
+      return value
+    }
+    .eraseToAnyPublisher()
+  } // end of validateCurrencyAmount
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -73,6 +102,8 @@ class MainVC: UIViewController {
     updateCollectionView()
     // adding the section title
     configureExchangeTitle()
+    // adding activity indicator
+    configureActivityIndicator()
     // adding the message label that'll display many status
     configureMessageTitle()
     // configuring the from button
@@ -86,11 +117,46 @@ class MainVC: UIViewController {
     // configure the exchange button
     configureExhangeButton()
 
-    // To test
-    $fromCurrency.sink { from in
-      print(from)
-    }
-    .store(in: &cancellables)
+    // To update the message label when amount of currency changes
+    validateCurrencyAmount
+      .removeDuplicates()
+      .debounce(for: .milliseconds(1000), scheduler: RunLoop.main)
+      .filter { $0 > 0 }
+      .map { value in
+        self.exchangeCurrencyOf(value, from: self.fromCurrency, to: self.toCurrency)
+          .sink { _ in
+            print("Completed")
+          } receiveValue: { exchange in
+            DispatchQueue.main.async {
+              self.messageTitle.text = "\(value) \(self.fromCurrency) = \(exchange.amount) \(self.toCurrency)"
+              self.messageTitle.textColor = .systemGreen
+            }
+          }
+          .store(in: &self.cancellables)
+      }
+      .sink { _ in
+        print("Done")
+      } receiveValue: { _ in
+        print("Call Done")
+      }
+      .store(in: &self.cancellables)
+
+    // when the currency type changes
+
+
+    // to show status
+    activityPublisher
+      .receive(on: RunLoop.main)
+      .sink { isWorking in
+        if isWorking {
+          self.activityIndicator.startAnimating()
+        } else {
+          self.activityIndicator.stopAnimating()
+        }
+      }
+      .store(in: &cancellables)
+
+
   }
 
   /// Updates the collectionView's cell
@@ -103,19 +169,42 @@ class MainVC: UIViewController {
   }
 
 
-  func exchangeCurrencyOf(_ amount: String, from input: String, to output: String) {
-    guard let url = URL(string: "http://api.evp.lt/currency/commercial/exchange/\(amount)-\(input)/\(output)/latest") else {return}
+  func exchangeCurrencyOf(_ amount: Double, from input: String, to output: String) -> AnyPublisher<Exchange, Error> {
+    let url = URL(string: "http://api.evp.lt/currency/commercial/exchange/\(amount)-\(input)/\(output)/latest")!
 
-    URLSession.shared.dataTaskPublisher(for: url)
-      .sink { error in
-        print(error)
-      } receiveValue: { response in
-        print(response)
+    let publisher = URLSession.shared.dataTaskPublisher(for: url)
+          .handleEvents(receiveSubscription: { _ in
+            self.activityPublisher.send(true)
+          }, receiveCompletion: { _ in
+            self.activityPublisher.send(false)
+          }, receiveCancel: {
+            self.activityPublisher.send(false)
+          })
+      .tryMap { output -> Data in
+        guard let httpResponse = output.response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+          DispatchQueue.main.async {
+            self.messageTitle.text = "Error with Network Response"
+            self.messageTitle.textColor = .systemRed
+          }
+          self.activityPublisher.send(false)
+          throw URLError(.badServerResponse)
+        }
+        return output.data
       }
-      .store(in: &cancellables)
+      .decode(type: Exchange.self, decoder: JSONDecoder())
+      .map {
+        $0
+      }
+      .eraseToAnyPublisher()
+
+    return publisher
   }
 
-  @objc func exchangeButtonDidTapped(_ sender: UIButton){
+  @objc func exchangeButtonDidTapped(_ sender: UIButton) {
     print("did tapped")
+  }
+
+  @objc func textFieldChanged() {
+    amountOfExchange = Double(currencyAmountTF.text ?? "0") ?? 0.0
   }
 }

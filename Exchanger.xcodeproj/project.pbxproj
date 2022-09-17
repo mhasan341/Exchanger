@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		510AC55B28D62B290071B93E /* UITextField+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510AC55A28D62B290071B93E /* UITextField+Ext.swift */; };
+		510AC55D28D63BE30071B93E /* Exchange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510AC55C28D63BE30071B93E /* Exchange.swift */; };
 		5155C7F228D395AE00E0A263 /* MainVC+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5155C7F128D395AE00E0A263 /* MainVC+Ext.swift */; };
 		5155C7F428D39B2700E0A263 /* UIView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5155C7F328D39B2700E0A263 /* UIView+Ext.swift */; };
 		5155C7F628D3A3A900E0A263 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5155C7F528D3A3A900E0A263 /* Utils.swift */; };
@@ -26,6 +27,7 @@
 
 /* Begin PBXFileReference section */
 		510AC55A28D62B290071B93E /* UITextField+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Ext.swift"; sourceTree = "<group>"; };
+		510AC55C28D63BE30071B93E /* Exchange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exchange.swift; sourceTree = "<group>"; };
 		5155C7F128D395AE00E0A263 /* MainVC+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainVC+Ext.swift"; sourceTree = "<group>"; };
 		5155C7F328D39B2700E0A263 /* UIView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Ext.swift"; sourceTree = "<group>"; };
 		5155C7F528D3A3A900E0A263 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				51AF612928D1CFB7003DCBC6 /* Currency.swift */,
+				510AC55C28D63BE30071B93E /* Exchange.swift */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -248,6 +251,7 @@
 				51AF611B28D1C9AA003DCBC6 /* MainVC.swift in Sources */,
 				51AF610828D1970B003DCBC6 /* SceneDelegate.swift in Sources */,
 				5155C7F828D3A47800E0A263 /* Section.swift in Sources */,
+				510AC55D28D63BE30071B93E /* Exchange.swift in Sources */,
 				510AC55B28D62B290071B93E /* UITextField+Ext.swift in Sources */,
 				51AF612328D1CD78003DCBC6 /* TitleLabel.swift in Sources */,
 				5155C7F628D3A3A900E0A263 /* Utils.swift in Sources */,

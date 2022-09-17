@@ -85,15 +85,26 @@ extension MainVC: UICollectionViewDelegate {
     ])
   }
 
+  /// Displays our activity status
+  func configureActivityIndicator() {
+    activityIndicator = UIActivityIndicatorView()
+    view.addSubview(activityIndicator)
+    activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+
+    NSLayoutConstraint.activate([
+      activityIndicator.topAnchor.constraint(equalTo: exchangeTitle.bottomAnchor, constant: contentPadding / 2),
+      activityIndicator.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -contentPadding)
+    ])
+  }
+
   /// Adds a Message Label that'll display different status
   func configureMessageTitle() {
     view.addSubview(messageTitle)
-    messageTitle.text = "Ready!"
 
     NSLayoutConstraint.activate([
       messageTitle.topAnchor.constraint(equalTo: exchangeTitle.bottomAnchor, constant: contentPadding / 2),
       messageTitle.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: contentPadding),
-      messageTitle.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -contentPadding)
+      messageTitle.trailingAnchor.constraint(equalTo: activityIndicator.leadingAnchor, constant: -contentPadding)
     ])
     messageTitle.textAlignment = .center
     messageTitle.numberOfLines = 2
@@ -171,7 +182,8 @@ extension MainVC: UICollectionViewDelegate {
     // let's add some padding
     currencyAmountTF.setLeftPaddingPoints(10)
     currencyAmountTF.setRightPaddingPoints(10)
-
+    // we could've used a delegate, instead I choose this for simplicity
+    currencyAmountTF.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)
   }
 
   func configureExhangeButton() {
@@ -210,6 +222,7 @@ extension MainVC: UICollectionViewDelegate {
     for item in availableCurrencies {
       collection.append(UIAction(title: item.abbreviation, image: nil, identifier: nil, discoverabilityTitle: nil, attributes: [], state: .off, handler: { action in
         self.toCurrency = action.title
+        self.toCurrencyButton.setTitle(action.title, for: .normal)
       }))
     }
 
