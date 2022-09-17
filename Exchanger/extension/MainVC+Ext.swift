@@ -115,6 +115,83 @@ extension MainVC: UICollectionViewDelegate {
     ])
   }
 
+  /// Adds the from dropdown currency selector
+  func configureToButton() {
+    let toLabel = SecondaryTitleLabel(size: 14)
+    view.addSubview(toLabel)
+    toLabel.text = "To"
+    view.addSubview(toCurrencyButton)
+
+    NSLayoutConstraint.activate([
+      toLabel.topAnchor.constraint(equalTo: messageTitle.bottomAnchor, constant: contentPadding / 2),
+      toLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -contentPadding),
+
+      toCurrencyButton.topAnchor.constraint(equalTo: toLabel.bottomAnchor, constant: 0),
+      toCurrencyButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -contentPadding)
+    ])
+  }
+
+  func configureArrowImages() {
+    view.addSubview(fromArrowIv)
+    view.addSubview(toArrowIv)
+
+    fromArrowIv.translatesAutoresizingMaskIntoConstraints = false
+    toArrowIv.translatesAutoresizingMaskIntoConstraints = false
+
+    fromArrowIv.tintColor = .systemOrange
+    toArrowIv.tintColor = .systemOrange
+
+    NSLayoutConstraint.activate([
+      fromArrowIv.leadingAnchor.constraint(equalTo: fromCurrencyButton.trailingAnchor, constant: 4),
+      fromArrowIv.centerYAnchor.constraint(equalTo: fromCurrencyButton.centerYAnchor, constant: 0),
+
+      toArrowIv.trailingAnchor.constraint(equalTo: toCurrencyButton.leadingAnchor, constant: -4),
+      toArrowIv.centerYAnchor.constraint(equalTo: toCurrencyButton.centerYAnchor, constant: 0)
+    ])
+  }
+
+  func configureInputTF() {
+    currencyAmountTF = UITextField()
+    view.addSubview(currencyAmountTF)
+    currencyAmountTF.translatesAutoresizingMaskIntoConstraints = false
+
+    currencyAmountTF.layer.borderColor = UIColor.systemGray.cgColor
+    currencyAmountTF.layer.borderWidth = 1.0
+    currencyAmountTF.layer.cornerRadius = 8.0
+    currencyAmountTF.layer.masksToBounds = true
+
+    currencyAmountTF.keyboardType = .decimalPad
+
+    NSLayoutConstraint.activate([
+      currencyAmountTF.leadingAnchor.constraint(equalTo: fromArrowIv.trailingAnchor, constant: contentPadding),
+      currencyAmountTF.topAnchor.constraint(equalTo: messageTitle.bottomAnchor, constant: contentPadding / 2),
+      currencyAmountTF.trailingAnchor.constraint(equalTo: toArrowIv.leadingAnchor, constant: -contentPadding),
+      currencyAmountTF.bottomAnchor.constraint(equalTo: fromCurrencyButton.bottomAnchor, constant: 0)
+    ])
+    // let's add some padding
+    currencyAmountTF.setLeftPaddingPoints(10)
+    currencyAmountTF.setRightPaddingPoints(10)
+
+  }
+
+  func configureExhangeButton() {
+    exchangeButton = UIButton()
+    view.addSubview(exchangeButton)
+    exchangeButton.translatesAutoresizingMaskIntoConstraints = false
+
+    exchangeButton.setTitle("Exchange", for: .normal)
+    exchangeButton.addTarget(self, action: #selector(exchangeButtonDidTapped), for: .touchUpInside)
+    exchangeButton.backgroundColor = .systemOrange
+    exchangeButton.layer.cornerRadius = 8.0
+    exchangeButton.layer.masksToBounds = true
+
+    NSLayoutConstraint.activate([
+      exchangeButton.topAnchor.constraint(equalTo: currencyAmountTF.bottomAnchor, constant: contentPadding / 2),
+      exchangeButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: contentPadding),
+      exchangeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -contentPadding)
+    ])
+  }
+
   /// Actinos for the "From" Dropdown
   func fromMenuAction() -> [UIAction] {
     var collection: [UIAction] = []

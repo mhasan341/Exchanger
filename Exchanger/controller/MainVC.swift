@@ -13,6 +13,10 @@ class MainVC: UIViewController {
   // Stores my balance cards
   var collectionView: UICollectionView!
   var dataSource: UICollectionViewDiffableDataSource<Section, Currency>!
+  // to input the amount user want to exchange
+  var currencyAmountTF: UITextField!
+  // to exchange the currency
+  var exchangeButton: UIButton!
   // swiftlint:enable implicitly_unwrapped_optional
   // Currencies the app supports
   var availableCurrencies = Utils.availableCurrencies()
@@ -21,7 +25,6 @@ class MainVC: UIViewController {
   /// title for second section
   let exchangeTitle = TitleLabel(size: 20)
   let messageTitle = TitleLabel(size: 16, color: .systemOrange)
-
   /// button for the from menu
   lazy var fromCurrencyButton: UIButton = {
     let button = UIButton(frame: .zero)
@@ -45,6 +48,9 @@ class MainVC: UIViewController {
     button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
     return button
   }()
+
+  let fromArrowIv = UIImageView(image: UIImage(systemName: "chevron.down"))
+  let toArrowIv = UIImageView(image: UIImage(systemName: "chevron.down"))
 
   /// to store the value of "From"
   ///  Using USD as the initial, since we'll have at least two currency to exchange
@@ -71,7 +77,14 @@ class MainVC: UIViewController {
     configureMessageTitle()
     // configuring the from button
     configureFromButton()
-    // con
+    // configuring the to button
+    configureToButton()
+    // the arrows for UX and decoration
+    configureArrowImages()
+    // configuring the TextField to take user input
+    configureInputTF()
+    // configure the exchange button
+    configureExhangeButton()
 
     // To test
     $fromCurrency.sink { from in
@@ -100,5 +113,9 @@ class MainVC: UIViewController {
         print(response)
       }
       .store(in: &cancellables)
+  }
+
+  @objc func exchangeButtonDidTapped(_ sender: UIButton){
+    print("did tapped")
   }
 }
