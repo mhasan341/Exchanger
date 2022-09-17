@@ -8,6 +8,7 @@
 import UIKit
 
 extension UIView {
+  /// adds a gradient background of orange and red to the calling view
   func addGradientBackground() {
     let colorLeft = UIColor.systemOrange.cgColor
     let colorRight = UIColor.systemRed.cgColor

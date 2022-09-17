@@ -73,4 +73,69 @@ extension MainVC: UICollectionViewDelegate {
       return view
     }
   }
+
+  /// Adds the title to view
+  func configureExchangeTitle() {
+    view.addSubview(exchangeTitle)
+    exchangeTitle.text = "Currency Exchange"
+
+    NSLayoutConstraint.activate([
+      exchangeTitle.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: contentPadding),
+      exchangeTitle.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: contentPadding)
+    ])
+  }
+
+  /// Adds a Message Label that'll display different status
+  func configureMessageTitle() {
+    view.addSubview(messageTitle)
+    messageTitle.text = "Ready!"
+
+    NSLayoutConstraint.activate([
+      messageTitle.topAnchor.constraint(equalTo: exchangeTitle.bottomAnchor, constant: contentPadding / 2),
+      messageTitle.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: contentPadding),
+      messageTitle.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -contentPadding)
+    ])
+    messageTitle.textAlignment = .center
+    messageTitle.numberOfLines = 2
+  }
+
+  /// Adds the from dropdown currency selector
+  func configureFromButton() {
+    let fromLabel = SecondaryTitleLabel(size: 14)
+    view.addSubview(fromLabel)
+    fromLabel.text = "From"
+    view.addSubview(fromCurrencyButton)
+
+    NSLayoutConstraint.activate([
+      fromLabel.topAnchor.constraint(equalTo: messageTitle.bottomAnchor, constant: contentPadding / 2),
+      fromLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: contentPadding),
+
+      fromCurrencyButton.topAnchor.constraint(equalTo: fromLabel.bottomAnchor, constant: 0),
+      fromCurrencyButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: contentPadding)
+    ])
+  }
+
+  /// Actinos for the "From" Dropdown
+  func fromMenuAction() -> [UIAction] {
+    var collection: [UIAction] = []
+    for item in availableCurrencies {
+      collection.append(UIAction(title: item.abbreviation, image: nil, identifier: nil, discoverabilityTitle: nil, attributes: [], state: .off, handler: { action in
+        self.fromCurrency = action.title
+        self.fromCurrencyButton.setTitle(action.title, for: .normal)
+      }))
+    }
+
+    return collection
+  }
+  /// Actinos for the "To" Dropdown
+  func toMenuActions() -> [UIAction] {
+    var collection: [UIAction] = []
+    for item in availableCurrencies {
+      collection.append(UIAction(title: item.abbreviation, image: nil, identifier: nil, discoverabilityTitle: nil, attributes: [], state: .off, handler: { action in
+        self.toCurrency = action.title
+      }))
+    }
+
+    return collection
+  }
 }

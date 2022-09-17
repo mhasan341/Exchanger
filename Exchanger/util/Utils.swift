@@ -56,8 +56,8 @@ enum Utils {
   static func availableCurrencies() -> [Currency] {
     var currencies: [Currency] = []
 
-    currencies.append(Currency(symbol: "$", abbreviation: "USD", balance: 1000))
-    currencies.append(Currency(symbol: "€", abbreviation: "EUR", balance: 0))
+    currencies.append(Currency(symbol: "$", abbreviation: "USD", balance: 0))
+    currencies.append(Currency(symbol: "€", abbreviation: "EUR", balance: 1000))
     currencies.append(Currency(symbol: "¥", abbreviation: "JPY", balance: 0))
     currencies.append(Currency(symbol: "C", abbreviation: "CFY", balance: 0))
     // currencies.append(Currency(symbol: "X", abbreviation: "XPY", balance: 0))
