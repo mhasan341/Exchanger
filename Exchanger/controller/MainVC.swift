@@ -70,11 +70,11 @@ class MainVC: UIViewController {
   let contentPadding: CGFloat = 20
 
   /// validates our currency input and updates the UI according to the value
-  var validateCurrencyAmount: AnyPublisher<Double, Never> {
+  var currencyAmount: AnyPublisher<Double, Never> {
     return $amountOfExchange.map { value in
       guard value > 0 else {
         DispatchQueue.main.async {
-          self.messageTitle.text = "Enter a valid amount"
+          self.messageTitle.text = "Ready!"
           self.messageTitle.textColor = .systemOrange
           self.activityPublisher.send(false)
         }
@@ -117,27 +117,33 @@ class MainVC: UIViewController {
     // configure the exchange button
     configureExhangeButton()
 
-    // To update the message label when amount of currency changes
-    validateCurrencyAmount
-      .removeDuplicates()
+    // To update the message label when amount or currency changes
+    currencyAmount
+      .combineLatest($fromCurrency, $toCurrency)
+      .map { tuple in
+        self.fromCurrency = tuple.1
+        self.toCurrency = tuple.2
+        return tuple.0
+      }
       .debounce(for: .milliseconds(1000), scheduler: RunLoop.main)
+      .map {
+        if $0 > 0 {
+          // enable the button
+          self.exchangeButton.backgroundColor = .systemOrange
+          self.exchangeButton.isEnabled = true
+        } else {
+          // disable the button
+          self.exchangeButton.backgroundColor = .systemOrange.withAlphaComponent(0.5)
+          self.exchangeButton.isEnabled = false
+        }
+        return $0
+      }
       .filter { $0 > 0 }
-      .map { value in
-        self.exchangeCurrencyOf(value, from: self.fromCurrency, to: self.toCurrency)
-          .sink { _ in
-            print("Completed")
-          } receiveValue: { exchange in
-            DispatchQueue.main.async {
-              self.messageTitle.text = "\(value) \(self.fromCurrency) = \(exchange.amount) \(self.toCurrency)"
-              self.messageTitle.textColor = .systemGreen
-            }
-          }
-          .store(in: &self.cancellables)
+      .map {
+        self.exchangeCurrencyOf($0, from: self.fromCurrency, to: self.toCurrency)
       }
       .sink { _ in
-        print("Done")
-      } receiveValue: { _ in
-        print("Call Done")
+        print("Call Done from Currency Amount")
       }
       .store(in: &self.cancellables)
 
@@ -156,7 +162,6 @@ class MainVC: UIViewController {
       }
       .store(in: &cancellables)
 
-
   }
 
   /// Updates the collectionView's cell
@@ -168,11 +173,10 @@ class MainVC: UIViewController {
     dataSource.apply(snapshot, animatingDifferences: true, completion: nil)
   }
 
-
-  func exchangeCurrencyOf(_ amount: Double, from input: String, to output: String) -> AnyPublisher<Exchange, Error> {
+  func exchangeCurrencyOf(_ amount: Double, from input: String, to output: String) {
     let url = URL(string: "http://api.evp.lt/currency/commercial/exchange/\(amount)-\(input)/\(output)/latest")!
 
-    let publisher = URLSession.shared.dataTaskPublisher(for: url)
+    URLSession.shared.dataTaskPublisher(for: url)
           .handleEvents(receiveSubscription: { _ in
             self.activityPublisher.send(true)
           }, receiveCompletion: { _ in
@@ -195,9 +199,18 @@ class MainVC: UIViewController {
       .map {
         $0
       }
-      .eraseToAnyPublisher()
-
-    return publisher
+      .map { exchange in
+            DispatchQueue.main.async {
+              self.messageTitle.text = "\(amount) \(self.fromCurrency) = \(exchange.amount) \(self.toCurrency)"
+              self.messageTitle.textColor = .systemGreen
+            }
+      }
+      .sink { _ in
+        print("Done")
+      } receiveValue: { _ in
+        print("Call Done")
+      }
+      .store(in: &self.cancellables)
   }
 
   @objc func exchangeButtonDidTapped(_ sender: UIButton) {
