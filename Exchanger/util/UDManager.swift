@@ -21,6 +21,4 @@ enum UDManager {
   static func saveBalance(_ amount: Double, for currency: String) {
     defaults.set(amount, forKey: currency)
   }
-
-
 }

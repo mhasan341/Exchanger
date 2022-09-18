@@ -8,6 +8,33 @@
 import UIKit
 
 extension MainVC: UICollectionViewDelegate {
+  /// calls different functions that lays out the layout of the app
+  func doInitialSetup(){
+    layoutGuide = view.safeAreaLayoutGuide
+    // collectionView for the balance cards
+    configureCollectionView()
+    // data source for the collectionView
+    configureDataSource()
+    // updates the collectionView with our balances
+    updateCollectionView()
+    // adding the section title
+    configureExchangeTitle()
+    // adding activity indicator
+    configureActivityIndicator()
+    // adding the message label that'll display many status
+    configureMessageTitle()
+    // configuring the from button
+    configureFromButton()
+    // configuring the to button
+    configureToButton()
+    // the arrows for UX and decoration
+    configureArrowImages()
+    // configuring the TextField to take user input
+    configureInputTF()
+    // configure the exchange button
+    configureExhangeButton()
+  }
+  
   /// CollectionView that holds the balance cards
   func configureCollectionView() {
     let contentView = UIView()

@@ -98,27 +98,14 @@ class MainVC: UIViewController {
     self.title = "Exchanger"
     navigationController?.navigationBar.prefersLargeTitles = true
 
-    layoutGuide = view.safeAreaLayoutGuide
+    /// Sets the whole layout
+    doInitialSetup()
 
-    configureCollectionView()
-    configureDataSource()
-    updateCollectionView()
-    // adding the section title
-    configureExchangeTitle()
-    // adding activity indicator
-    configureActivityIndicator()
-    // adding the message label that'll display many status
-    configureMessageTitle()
-    // configuring the from button
-    configureFromButton()
-    // configuring the to button
-    configureToButton()
-    // the arrows for UX and decoration
-    configureArrowImages()
-    // configuring the TextField to take user input
-    configureInputTF()
-    // configure the exchange button
-    configureExhangeButton()
+    /// Test UD
+    UDManager.saveBalance(1000, for: "EUR")
+    UserDefaults.standard.publisher(for: "EUR").sink { ud in
+      print(ud.double(forKey: "EUR"))
+    }
 
     // To update the message label when amount or currency changes
     currencyAmount
@@ -164,7 +151,7 @@ class MainVC: UIViewController {
   }
 
   /// Updates the collectionView's cell
-  private func updateCollectionView() {
+  func updateCollectionView() {
     var snapshot = NSDiffableDataSourceSnapshot<Section, Currency>()
     snapshot.appendSections([Section(title: Utils.balanceSection)])
     snapshot.appendItems(availableCurrencies, toSection: Section(title: Utils.balanceSection))
