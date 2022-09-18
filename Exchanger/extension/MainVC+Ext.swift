@@ -16,10 +16,9 @@ extension MainVC: UICollectionViewDelegate {
     contentView.translatesAutoresizingMaskIntoConstraints = false
 
     NSLayoutConstraint.activate([
-      contentView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: contentPadding),
-      contentView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: contentPadding),
-      // swiftlint:disable:next line_length
-      contentView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -contentPadding),
+      contentView.topAnchor.constraint(equalTo: layoutGuide.topAnchor, constant: contentPadding),
+      contentView.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: contentPadding),
+      contentView.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -contentPadding),
       contentView.heightAnchor.constraint(equalToConstant: 150)
     ])
 
@@ -81,7 +80,7 @@ extension MainVC: UICollectionViewDelegate {
 
     NSLayoutConstraint.activate([
       exchangeTitle.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: contentPadding),
-      exchangeTitle.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: contentPadding)
+      exchangeTitle.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: contentPadding)
     ])
   }
 
@@ -93,7 +92,7 @@ extension MainVC: UICollectionViewDelegate {
 
     NSLayoutConstraint.activate([
       activityIndicator.topAnchor.constraint(equalTo: exchangeTitle.bottomAnchor, constant: contentPadding / 2),
-      activityIndicator.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -contentPadding)
+      activityIndicator.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -contentPadding)
     ])
   }
 
@@ -103,7 +102,7 @@ extension MainVC: UICollectionViewDelegate {
 
     NSLayoutConstraint.activate([
       messageTitle.topAnchor.constraint(equalTo: exchangeTitle.bottomAnchor, constant: contentPadding / 2),
-      messageTitle.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: contentPadding),
+      messageTitle.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: contentPadding),
       messageTitle.trailingAnchor.constraint(equalTo: activityIndicator.leadingAnchor, constant: -contentPadding)
     ])
     messageTitle.textAlignment = .center
@@ -119,10 +118,10 @@ extension MainVC: UICollectionViewDelegate {
 
     NSLayoutConstraint.activate([
       fromLabel.topAnchor.constraint(equalTo: messageTitle.bottomAnchor, constant: contentPadding / 2),
-      fromLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: contentPadding),
+      fromLabel.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: contentPadding),
 
       fromCurrencyButton.topAnchor.constraint(equalTo: fromLabel.bottomAnchor, constant: 0),
-      fromCurrencyButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: contentPadding)
+      fromCurrencyButton.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: contentPadding)
     ])
   }
 
@@ -135,10 +134,10 @@ extension MainVC: UICollectionViewDelegate {
 
     NSLayoutConstraint.activate([
       toLabel.topAnchor.constraint(equalTo: messageTitle.bottomAnchor, constant: contentPadding / 2),
-      toLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -contentPadding),
+      toLabel.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -contentPadding),
 
       toCurrencyButton.topAnchor.constraint(equalTo: toLabel.bottomAnchor, constant: 0),
-      toCurrencyButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -contentPadding)
+      toCurrencyButton.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -contentPadding)
     ])
   }
 
@@ -199,8 +198,8 @@ extension MainVC: UICollectionViewDelegate {
 
     NSLayoutConstraint.activate([
       exchangeButton.topAnchor.constraint(equalTo: currencyAmountTF.bottomAnchor, constant: contentPadding / 2),
-      exchangeButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: contentPadding),
-      exchangeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -contentPadding)
+      exchangeButton.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: contentPadding),
+      exchangeButton.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -contentPadding)
     ])
   }
 
@@ -208,10 +207,10 @@ extension MainVC: UICollectionViewDelegate {
   func fromMenuAction() -> [UIAction] {
     var collection: [UIAction] = []
     for item in availableCurrencies {
-      collection.append(UIAction(title: item.abbreviation, image: nil, identifier: nil, discoverabilityTitle: nil, attributes: [], state: .off, handler: { action in
+      collection.append(UIAction(title: item.abbreviation, state: .off) { action in
         self.fromCurrency = action.title
         self.fromCurrencyButton.setTitle(action.title, for: .normal)
-      }))
+      })
     }
 
     return collection
@@ -220,10 +219,10 @@ extension MainVC: UICollectionViewDelegate {
   func toMenuActions() -> [UIAction] {
     var collection: [UIAction] = []
     for item in availableCurrencies {
-      collection.append(UIAction(title: item.abbreviation, image: nil, identifier: nil, discoverabilityTitle: nil, attributes: [], state: .off, handler: { action in
+      collection.append(UIAction(title: item.abbreviation, state: .off) { action in
         self.toCurrency = action.title
         self.toCurrencyButton.setTitle(action.title, for: .normal)
-      }))
+      })
     }
 
     return collection

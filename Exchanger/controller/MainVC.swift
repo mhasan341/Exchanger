@@ -19,6 +19,7 @@ class MainVC: UIViewController {
   var exchangeButton: UIButton!
   // just an ordinary activity indicator
   var activityIndicator: UIActivityIndicatorView!
+  var layoutGuide: UILayoutGuide!
   // swiftlint:enable implicitly_unwrapped_optional
   // Currencies the app supports
   var availableCurrencies = Utils.availableCurrencies()
@@ -97,6 +98,8 @@ class MainVC: UIViewController {
     self.title = "Exchanger"
     navigationController?.navigationBar.prefersLargeTitles = true
 
+    layoutGuide = view.safeAreaLayoutGuide
+
     configureCollectionView()
     configureDataSource()
     updateCollectionView()
@@ -147,9 +150,6 @@ class MainVC: UIViewController {
       }
       .store(in: &self.cancellables)
 
-    // when the currency type changes
-
-
     // to show status
     activityPublisher
       .receive(on: RunLoop.main)
@@ -161,7 +161,6 @@ class MainVC: UIViewController {
         }
       }
       .store(in: &cancellables)
-
   }
 
   /// Updates the collectionView's cell
@@ -174,16 +173,17 @@ class MainVC: UIViewController {
   }
 
   func exchangeCurrencyOf(_ amount: Double, from input: String, to output: String) {
+    // swiftlint:disable:next force_unwrapping
     let url = URL(string: "http://api.evp.lt/currency/commercial/exchange/\(amount)-\(input)/\(output)/latest")!
-
+    // swiftlint:disable:next array_init
     URLSession.shared.dataTaskPublisher(for: url)
-          .handleEvents(receiveSubscription: { _ in
-            self.activityPublisher.send(true)
-          }, receiveCompletion: { _ in
-            self.activityPublisher.send(false)
-          }, receiveCancel: {
-            self.activityPublisher.send(false)
-          })
+      .handleEvents(receiveSubscription: { _ in
+        self.activityPublisher.send(true)
+      }, receiveCompletion: { _ in
+        self.activityPublisher.send(false)
+      }, receiveCancel: {
+        self.activityPublisher.send(false)
+      })
       .tryMap { output -> Data in
         guard let httpResponse = output.response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
           DispatchQueue.main.async {
@@ -200,10 +200,10 @@ class MainVC: UIViewController {
         $0
       }
       .map { exchange in
-            DispatchQueue.main.async {
-              self.messageTitle.text = "\(amount) \(self.fromCurrency) = \(exchange.amount) \(self.toCurrency)"
-              self.messageTitle.textColor = .systemGreen
-            }
+        DispatchQueue.main.async {
+          self.messageTitle.text = "\(amount) \(self.fromCurrency) = \(exchange.amount) \(self.toCurrency)"
+          self.messageTitle.textColor = .systemGreen
+        }
       }
       .sink { _ in
         print("Done")
