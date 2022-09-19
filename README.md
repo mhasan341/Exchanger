@@ -1,7 +1,11 @@
 # Exchanger
 Swift app to convert currencies
 
-## Perks
+## What's Special
+- Swift Reactive Programming using Combine Framework
+- 100% Programmatic UI
+
+## Features
 
 - Written in Swift
 - Build in around 30 working hour
@@ -20,7 +24,3 @@ Swift app to convert currencies
 
 - Flexible commissioning system
 - Code conforms to "Raywenderlich Swift Style Guide"
-
-## What's Special
-- Swift Reactive Programming using Combine Framework
-- 100% Programmatic UI
