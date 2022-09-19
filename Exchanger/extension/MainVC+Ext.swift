@@ -218,7 +218,8 @@ extension MainVC: UICollectionViewDelegate {
 
     exchangeButton.setTitle("Exchange", for: .normal)
     exchangeButton.addTarget(self, action: #selector(exchangeButtonDidTapped), for: .touchUpInside)
-    exchangeButton.backgroundColor = .systemOrange
+    exchangeButton.backgroundColor = .systemGray
+    exchangeButton.isEnabled = false
     exchangeButton.layer.cornerRadius = 8.0
     exchangeButton.layer.masksToBounds = true
 
@@ -340,5 +341,46 @@ extension MainVC: UICollectionViewDelegate {
   }
 
   /// checks if user has any balance available for exchange
-  
+  func isSelectedFromAvailable() -> Bool {
+    switch CurrencyEnums(rawValue: fromCurrency) {
+    case .usdAbbr:
+      return availableUsdBalance > 0
+    case .eurAbbr:
+      return availableEurBalance > 0
+    case .jpyAbbr:
+      return availableJpyBalance > 0
+    case .none:
+    print("None matched")
+    }
+
+    return false
+  }
+
+  /// checks if user's balance covers the whole exchange including fee
+  func isExchangePossible() -> Bool {
+    // how much in total to deduct
+    let totalAmountToDeduct = self.calculateFee(amountOfExchange) + amountOfExchange
+
+    switch CurrencyEnums(rawValue: fromCurrency) {
+    case .usdAbbr:
+      return availableUsdBalance >= totalAmountToDeduct
+    case .eurAbbr:
+      return availableEurBalance > totalAmountToDeduct
+    case .jpyAbbr:
+      return availableJpyBalance > totalAmountToDeduct
+    case .none:
+      print("None matched")
+    }
+
+    return false
+  }
+
+  /// Disables the exchange button
+  func disableExchangeButton(){
+    DispatchQueue.main.async {
+      // disable the button
+      self.exchangeButton.backgroundColor = .systemGray
+      self.exchangeButton.isEnabled = false
+    }
+  }
 }

@@ -93,8 +93,6 @@ class MainVC: UIViewController {
         return 0
       }
 
-      self.updateMessage(with: MessageType.readyAndWaiting.rawValue, color: .systemOrange)
-
       return value
     }
     .eraseToAnyPublisher()
@@ -133,8 +131,12 @@ class MainVC: UIViewController {
       .map { tuple in
         self.fromCurrency = tuple.1
         self.toCurrency = tuple.2
+        self.disableExchangeButton()
         // check if user has balance in from currency
-        
+        if !self.isSelectedFromAvailable() {
+          self.updateMessage(with: MessageType.zeroBalance.rawValue, color: .systemRed)
+          return 0.0
+        }
 
         if tuple.1 == tuple.2 {
           print("Same Currency")
@@ -147,18 +149,6 @@ class MainVC: UIViewController {
         return tuple.0
       }
       .debounce(for: .milliseconds(1000), scheduler: RunLoop.main)
-      .map {
-        if $0 > 0 {
-          // enable the button
-          self.exchangeButton.backgroundColor = .systemOrange
-          self.exchangeButton.isEnabled = true
-        } else {
-          // disable the button
-          self.exchangeButton.backgroundColor = .systemOrange.withAlphaComponent(0.5)
-          self.exchangeButton.isEnabled = false
-        }
-        return $0
-      }
       .filter { $0 > 0 }
       .map {
         self.exchangeCurrencyOf($0, from: self.fromCurrency, to: self.toCurrency)
@@ -246,6 +236,7 @@ class MainVC: UIViewController {
       }
       .store(in: &cancellables)
   }
+
   /// to show status
   func setActivityPublisher() {
     activityPublisher
@@ -271,6 +262,7 @@ class MainVC: UIViewController {
   func exchangeCurrencyOf(_ amount: Double, from input: String, to output: String) {
     // swiftlint:disable:next force_unwrapping
     let url = URL(string: "http://api.evp.lt/currency/commercial/exchange/\(amount)-\(input)/\(output)/latest")!
+    self.updateMessage(with: MessageType.working.rawValue, color: .systemGreen)
     // swiftlint:disable:next array_init
     URLSession.shared.dataTaskPublisher(for: url)
       .handleEvents(receiveSubscription: { _ in
@@ -292,7 +284,12 @@ class MainVC: UIViewController {
       .map {
         $0
       }
-      .map { exchange in
+      .map { exchange -> Bool in
+        if !self.isExchangePossible() {
+          self.updateMessage(with: MessageType.notEnoughBalance.rawValue, color: .systemRed)
+          return false
+        }
+
         self.updateMessage(
           with:
           """
@@ -300,13 +297,24 @@ class MainVC: UIViewController {
           \(self.calculateFee(amount)) \(input) fee will be deducted
           """,
           color: .systemGreen)
+
         // set the exchange item
         self.exchangeItem = exchange
+
+        return true
       }
       .sink { _ in
-        print("Done")
-      } receiveValue: { _ in
-        print("Call Done")
+        print("Finished Network call")
+      } receiveValue: { value in
+        if !value {
+          self.disableExchangeButton()
+        } else {
+          DispatchQueue.main.async {
+            // enable the button
+            self.exchangeButton.backgroundColor = .systemOrange
+            self.exchangeButton.isEnabled = true
+          }
+        }
       }
       .store(in: &self.cancellables)
   }
@@ -321,6 +329,10 @@ class MainVC: UIViewController {
 
       // update the exchange count
       userDefault.exchangeCount += 1
+
+      // reset everything
+      currencyAmountTF.text = ""
+      amountOfExchange = 0
     }
   }
 
