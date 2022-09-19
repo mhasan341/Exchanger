@@ -28,7 +28,7 @@
 		51AF612328D1CD78003DCBC6 /* TitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AF612228D1CD78003DCBC6 /* TitleLabel.swift */; };
 		51AF612528D1CD8D003DCBC6 /* SecondaryTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AF612428D1CD8D003DCBC6 /* SecondaryTitleLabel.swift */; };
 		51AF612A28D1CFB7003DCBC6 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AF612928D1CFB7003DCBC6 /* Currency.swift */; };
-		51C29FAD28D91A8D0057F553 /* banner.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 51C29FAC28D91A8D0057F553 /* banner.jpg */; };
+		51C29FAF28D91ABC0057F553 /* cover.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 51C29FAE28D91ABC0057F553 /* cover.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,7 +55,7 @@
 		51AF612228D1CD78003DCBC6 /* TitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleLabel.swift; sourceTree = "<group>"; };
 		51AF612428D1CD8D003DCBC6 /* SecondaryTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryTitleLabel.swift; sourceTree = "<group>"; };
 		51AF612928D1CFB7003DCBC6 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
-		51C29FAC28D91A8D0057F553 /* banner.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = banner.jpg; sourceTree = "<group>"; };
+		51C29FAE28D91ABC0057F553 /* cover.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cover.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,7 +84,7 @@
 		51AF60F928D1970B003DCBC6 = {
 			isa = PBXGroup;
 			children = (
-				51C29FAC28D91A8D0057F553 /* banner.jpg */,
+				51C29FAE28D91ABC0057F553 /* cover.jpg */,
 				51AF610428D1970B003DCBC6 /* Exchanger */,
 				51AF610328D1970B003DCBC6 /* Products */,
 			);
@@ -233,7 +233,7 @@
 				510D3AF728D913C5007A21E3 /* README.md in Resources */,
 				51AF611228D1970C003DCBC6 /* LaunchScreen.storyboard in Resources */,
 				51AF610F28D1970C003DCBC6 /* Assets.xcassets in Resources */,
-				51C29FAD28D91A8D0057F553 /* banner.jpg in Resources */,
+				51C29FAF28D91ABC0057F553 /* cover.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
