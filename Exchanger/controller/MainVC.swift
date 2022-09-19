@@ -11,6 +11,8 @@ import Combine
 class MainVC: UIViewController {
   // swiftlint:disable implicitly_unwrapped_optional
   // MARK: UI Elements
+  // a scrollView
+  let scrollView = UIScrollView()
   // to host the scrollview
   let contentView = UIView()
   // Stores my balance cards
@@ -125,6 +127,8 @@ class MainVC: UIViewController {
     setCurrencyAmountPublisher()
     // State of our network call
     setActivityPublisher()
+    // to handle keyboard
+    registerNotifications()
   }
 
   func setCurrencyAmountPublisher() {
@@ -233,6 +237,26 @@ class MainVC: UIViewController {
         }
       }
       .store(in: &self.cancellables)
+  }
+
+  private func registerNotifications() {
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(keyboardWillShow),
+                                           name: UIResponder.keyboardWillShowNotification,
+                                           object: nil)
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(keyboardWillHide),
+                                           name: UIResponder.keyboardWillHideNotification,
+                                           object: nil)
+  }
+
+  @objc private func keyboardWillShow(notification: NSNotification) {
+    guard let keyboardFrame = notification.userInfo![UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+    scrollView.contentInset.bottom = view.convert(keyboardFrame.cgRectValue, from: nil).size.height
+  }
+
+  @objc private func keyboardWillHide(notification: NSNotification) {
+    scrollView.contentInset.bottom = 0
   }
 
   // MARK: UI Events

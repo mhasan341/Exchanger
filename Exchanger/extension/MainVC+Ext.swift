@@ -39,8 +39,6 @@ extension MainVC: UICollectionViewDelegate {
 
   // the scrollview
   func configureScrollView() {
-    // a scrollView
-    let scrollView = UIScrollView()
     view.addSubview(scrollView)
 
     scrollView.translatesAutoresizingMaskIntoConstraints = false
