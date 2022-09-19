@@ -159,6 +159,105 @@ class MainVC: UIViewController {
       .store(in: &self.cancellables)
   }
 
+  /// to show status
+  func setActivityPublisher() {
+    activityPublisher
+      .receive(on: RunLoop.main)
+      .sink { isWorking in
+        if isWorking {
+          self.activityIndicator.startAnimating()
+        } else {
+          self.activityIndicator.stopAnimating()
+        }
+      }
+      .store(in: &cancellables)
+  }
+
+  func exchangeCurrencyOf(_ amount: Double, from input: String, to output: String) {
+    // swiftlint:disable:next force_unwrapping
+    let url = URL(string: "http://api.evp.lt/currency/commercial/exchange/\(amount)-\(input)/\(output)/latest")!
+    self.updateMessage(with: MessageType.working.rawValue, color: .systemGreen)
+    // swiftlint:disable:next array_init
+    URLSession.shared.dataTaskPublisher(for: url)
+      .handleEvents(receiveSubscription: { _ in
+        self.activityPublisher.send(true)
+      }, receiveCompletion: { _ in
+        self.activityPublisher.send(false)
+      }, receiveCancel: {
+        self.activityPublisher.send(false)
+      })
+      .tryMap { output -> Data in
+        guard let httpResponse = output.response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+          self.updateMessage(with: MessageType.networkError.rawValue, color: .systemRed)
+          self.activityPublisher.send(false)
+          throw URLError(.badServerResponse)
+        }
+        return output.data
+      }
+      .decode(type: Exchange.self, decoder: JSONDecoder())
+      .map {
+        $0
+      }
+      .map { exchange -> Bool in
+        if !self.isExchangePossible() {
+          self.updateMessage(with: MessageType.notEnoughBalance.rawValue, color: .systemRed)
+          return false
+        }
+
+        self.updateMessage(
+          with:
+          """
+          You'll receive \(exchange.amount) \(exchange.currency) for \(amount) \(input),
+          \(self.calculateFee(amount)) \(input) fee will be deducted
+          """,
+          color: .systemGreen)
+
+        // set the exchange item
+        self.exchangeItem = exchange
+
+        return true
+      }
+      .sink { _ in
+        print("Finished Network call")
+      } receiveValue: { value in
+        if !value {
+          self.disableExchangeButton()
+        } else {
+          DispatchQueue.main.async {
+            // enable the button
+            self.exchangeButton.backgroundColor = .systemOrange
+            self.exchangeButton.isEnabled = true
+          }
+        }
+      }
+      .store(in: &self.cancellables)
+  }
+
+  // MARK: UI Events
+
+  @objc func exchangeButtonDidTapped(_ sender: UIButton) {
+    if exchangeItem != nil {
+      // add the exchanged amount
+      addExchangedAmount()
+
+      // deduct the balance we're exchanging
+      deductExchangingAmount()
+
+      // update the exchange count
+      userDefault.exchangeCount += 1
+
+      // reset everything
+      currencyAmountTF.text = ""
+      amountOfExchange = 0
+    }
+  }
+
+  @objc func textFieldChanged() {
+    amountOfExchange = Double(currencyAmountTF.text ?? "0") ?? 0.0
+  }
+
+  // MARK: Add New Currencies Here
+
   /// EUR
   func setEurBalancePublisher() {
     userDefault
@@ -235,108 +334,5 @@ class MainVC: UIViewController {
         self.updateCollectionView()
       }
       .store(in: &cancellables)
-  }
-
-  /// to show status
-  func setActivityPublisher() {
-    activityPublisher
-      .receive(on: RunLoop.main)
-      .sink { isWorking in
-        if isWorking {
-          self.activityIndicator.startAnimating()
-        } else {
-          self.activityIndicator.stopAnimating()
-        }
-      }
-      .store(in: &cancellables)
-  }
-
-  /// Updates the collectionView's cell
-  func updateCollectionView() {
-    var snapshot = NSDiffableDataSourceSnapshot<Section, Currency>()
-    snapshot.appendSections([Section(title: Utils.balanceSection)])
-    snapshot.appendItems(myCurrencies, toSection: Section(title: Utils.balanceSection))
-    dataSource.apply(snapshot, animatingDifferences: true)
-  }
-
-  func exchangeCurrencyOf(_ amount: Double, from input: String, to output: String) {
-    // swiftlint:disable:next force_unwrapping
-    let url = URL(string: "http://api.evp.lt/currency/commercial/exchange/\(amount)-\(input)/\(output)/latest")!
-    self.updateMessage(with: MessageType.working.rawValue, color: .systemGreen)
-    // swiftlint:disable:next array_init
-    URLSession.shared.dataTaskPublisher(for: url)
-      .handleEvents(receiveSubscription: { _ in
-        self.activityPublisher.send(true)
-      }, receiveCompletion: { _ in
-        self.activityPublisher.send(false)
-      }, receiveCancel: {
-        self.activityPublisher.send(false)
-      })
-      .tryMap { output -> Data in
-        guard let httpResponse = output.response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-          self.updateMessage(with: MessageType.networkError.rawValue, color: .systemRed)
-          self.activityPublisher.send(false)
-          throw URLError(.badServerResponse)
-        }
-        return output.data
-      }
-      .decode(type: Exchange.self, decoder: JSONDecoder())
-      .map {
-        $0
-      }
-      .map { exchange -> Bool in
-        if !self.isExchangePossible() {
-          self.updateMessage(with: MessageType.notEnoughBalance.rawValue, color: .systemRed)
-          return false
-        }
-
-        self.updateMessage(
-          with:
-          """
-          You'll receive \(exchange.amount) \(exchange.currency) for \(amount) \(input),
-          \(self.calculateFee(amount)) \(input) fee will be deducted
-          """,
-          color: .systemGreen)
-
-        // set the exchange item
-        self.exchangeItem = exchange
-
-        return true
-      }
-      .sink { _ in
-        print("Finished Network call")
-      } receiveValue: { value in
-        if !value {
-          self.disableExchangeButton()
-        } else {
-          DispatchQueue.main.async {
-            // enable the button
-            self.exchangeButton.backgroundColor = .systemOrange
-            self.exchangeButton.isEnabled = true
-          }
-        }
-      }
-      .store(in: &self.cancellables)
-  }
-
-  @objc func exchangeButtonDidTapped(_ sender: UIButton) {
-    if exchangeItem != nil {
-      // add the exchanged amount
-      addExchangedAmount()
-
-      // deduct the balance we're exchanging
-      deductExchangingAmount()
-
-      // update the exchange count
-      userDefault.exchangeCount += 1
-
-      // reset everything
-      currencyAmountTF.text = ""
-      amountOfExchange = 0
-    }
-  }
-
-  @objc func textFieldChanged() {
-    amountOfExchange = Double(currencyAmountTF.text ?? "0") ?? 0.0
   }
 }

@@ -69,6 +69,15 @@ extension MainVC: UICollectionViewDelegate {
     )
   }
 
+
+  /// Updates the collectionView's cell
+  func updateCollectionView() {
+    var snapshot = NSDiffableDataSourceSnapshot<Section, Currency>()
+    snapshot.appendSections([Section(title: Utils.balanceSection)])
+    snapshot.appendItems(myCurrencies, toSection: Section(title: Utils.balanceSection))
+    dataSource.apply(snapshot, animatingDifferences: true)
+  }
+
   /// DataSource for the collectionView
   func configureDataSource() {
     // swiftlint:disable line_length
@@ -376,7 +385,7 @@ extension MainVC: UICollectionViewDelegate {
   }
 
   /// Disables the exchange button
-  func disableExchangeButton(){
+  func disableExchangeButton() {
     DispatchQueue.main.async {
       // disable the button
       self.exchangeButton.backgroundColor = .systemGray
