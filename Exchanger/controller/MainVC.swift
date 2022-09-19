@@ -60,11 +60,11 @@ class MainVC: UIViewController {
   // to update our activity indicator
   var activityPublisher = PassthroughSubject<Bool, Never>()
   /// to store the value of "From"
-  ///  Using USD as the initial, since we'll have at least two currency to exchange
-  @Published var fromCurrency: String = "EUR"
+  ///  Using EUR as the initial, since we'll have at least two currency to exchange
+  @Published var fromCurrency: String = CurrencyEnums.eurAbbr.rawValue
   /// to store the value of "To"
-  ///  Using EUR as the second, since we'll have at least two currency to exchange
-  @Published var toCurrency: String = "USD"
+  ///  Using USD as the second, since we'll have at least two currency to exchange
+  @Published var toCurrency: String = CurrencyEnums.usdAbbr.rawValue
   /// to store the currencyAmount user inputed on our TF
   @Published var amountOfExchange: Double = 0
 
@@ -73,6 +73,7 @@ class MainVC: UIViewController {
   @Published var availableUsdBalance: Double = 0
   @Published var availableEurBalance: Double = 0
   @Published var availableJpyBalance: Double = 0
+  @Published var exchangeItem: Exchange?
 
   // MARK: Everything else
   /// Constant for padding/margining views
@@ -87,7 +88,7 @@ class MainVC: UIViewController {
     return $amountOfExchange.map { value in
       guard value > 0 else {
         self.updateMessage(with: MessageType.ready.rawValue, color: .systemOrange)
-          self.activityPublisher.send(false)
+        self.activityPublisher.send(false)
 
         return 0
       }
@@ -118,6 +119,7 @@ class MainVC: UIViewController {
     // To update the Collection view on these balance change
     setEurBalancePublisher()
     setUsdBalancePublisher()
+    setJpyBalancePublisher()
 
     // To update the message label when amount or currency changes
     setCurrencyAmountPublisher()
@@ -131,6 +133,8 @@ class MainVC: UIViewController {
       .map { tuple in
         self.fromCurrency = tuple.1
         self.toCurrency = tuple.2
+        // check if user has balance in from currency
+        
 
         if tuple.1 == tuple.2 {
           print("Same Currency")
@@ -177,8 +181,12 @@ class MainVC: UIViewController {
       }
       .sink { value in
         self.availableEurBalance = value
-        if let row = self.myCurrencies.firstIndex(where: {$0.abbreviation == "EUR"}) {
-          let newItem = Currency(symbol: self.myCurrencies[row].symbol, abbreviation: self.myCurrencies[row].abbreviation, balance: value.round(to: 2))
+        if let row = self.myCurrencies.firstIndex(where: { $0.abbreviation == CurrencyEnums.eurAbbr.rawValue }) {
+          let newItem = Currency(
+            symbol: self.myCurrencies[row].symbol,
+            abbreviation: self.myCurrencies[row].abbreviation,
+            balance: value.round(to: 2))
+          // update the currency in collection
           self.myCurrencies[row] = newItem
         }
 
@@ -199,8 +207,12 @@ class MainVC: UIViewController {
       }
       .sink { value in
         self.availableUsdBalance = value
-        if let row = self.myCurrencies.firstIndex(where: {$0.abbreviation == "USD"}) {
-          let newItem = Currency(symbol: self.myCurrencies[row].symbol, abbreviation: self.myCurrencies[row].abbreviation, balance: value.round(to: 2))
+        if let row = self.myCurrencies.firstIndex(where: { $0.abbreviation == CurrencyEnums.usdAbbr.rawValue }) {
+          let newItem = Currency(
+            symbol: self.myCurrencies[row].symbol,
+            abbreviation: self.myCurrencies[row].abbreviation,
+            balance: value.round(to: 2))
+          // update the currency in collection
           self.myCurrencies[row] = newItem
         }
 
@@ -209,6 +221,31 @@ class MainVC: UIViewController {
       .store(in: &cancellables)
   }
 
+  /// JPY
+  func setJpyBalancePublisher() {
+    userDefault
+      .publisher(for: \.jpyBalance)
+      .removeDuplicates()
+      .map { currentValue in
+        // Return the value if it's greater than 0, else returns 0
+        // a caution against neg values
+        currentValue > 0 ? currentValue : 0
+      }
+      .sink { value in
+        self.availableJpyBalance = value
+        if let row = self.myCurrencies.firstIndex(where: { $0.abbreviation == CurrencyEnums.jpyAbbr.rawValue }) {
+          let newItem = Currency(
+            symbol: self.myCurrencies[row].symbol,
+            abbreviation: self.myCurrencies[row].abbreviation,
+            balance: value.round(to: 2))
+          // update the currency in collection
+          self.myCurrencies[row] = newItem
+        }
+        print(self.myCurrencies)
+        self.updateCollectionView()
+      }
+      .store(in: &cancellables)
+  }
   /// to show status
   func setActivityPublisher() {
     activityPublisher
@@ -256,7 +293,15 @@ class MainVC: UIViewController {
         $0
       }
       .map { exchange in
-        self.updateMessage(with: "You'll receive \(exchange.amount) \(exchange.currency) for \(amount) \(input)", color: .systemGreen)
+        self.updateMessage(
+          with:
+          """
+          You'll receive \(exchange.amount) \(exchange.currency) for \(amount) \(input),
+          \(self.calculateFee(amount)) \(input) fee will be deducted
+          """,
+          color: .systemGreen)
+        // set the exchange item
+        self.exchangeItem = exchange
       }
       .sink { _ in
         print("Done")
@@ -267,31 +312,19 @@ class MainVC: UIViewController {
   }
 
   @objc func exchangeButtonDidTapped(_ sender: UIButton) {
-    print("did tapped")
+    if exchangeItem != nil {
+      // add the exchanged amount
+      addExchangedAmount()
+
+      // deduct the balance we're exchanging
+      deductExchangingAmount()
+
+      // update the exchange count
+      userDefault.exchangeCount += 1
+    }
   }
 
   @objc func textFieldChanged() {
     amountOfExchange = Double(currencyAmountTF.text ?? "0") ?? 0.0
-  }
-
-  /// creates currency symbol, initial balance, and abbr
-  func availableCurrencies() -> [Currency] {
-    var currencies: [Currency] = []
-    currencies.append(Currency(symbol: "$", abbreviation: "USD", balance: availableUsdBalance))
-    currencies.append(Currency(symbol: "€", abbreviation: "EUR", balance: availableEurBalance))
-    currencies.append(Currency(symbol: "¥", abbreviation: "JPY", balance: availableJpyBalance))
-
-    return currencies
-  }
-
-  /// updates the message label with the desired text and color
-  /// Red: Warning/Alert
-  /// Green: Something positive/Success
-  /// Orange: General Info
-  func updateMessage(with text: String, color textColor: UIColor) {
-    DispatchQueue.main.async {
-      self.messageTitle.text = text
-      self.messageTitle.textColor = textColor
-    }
   }
 }

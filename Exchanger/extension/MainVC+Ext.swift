@@ -9,7 +9,7 @@ import UIKit
 
 extension MainVC: UICollectionViewDelegate {
   /// calls different functions that lays out the layout of the app
-  func doInitialSetup(){
+  func doInitialSetup() {
     layoutGuide = view.safeAreaLayoutGuide
     // collectionView for the balance cards
     configureCollectionView()
@@ -34,7 +34,6 @@ extension MainVC: UICollectionViewDelegate {
     // configure the exchange button
     configureExhangeButton()
   }
-  
   /// CollectionView that holds the balance cards
   func configureCollectionView() {
     let contentView = UIView()
@@ -254,4 +253,92 @@ extension MainVC: UICollectionViewDelegate {
 
     return collection
   }
+  /// creates currency symbol, initial balance, and abbr
+  func availableCurrencies() -> [Currency] {
+    var currencies: [Currency] = []
+    currencies.append(Currency(symbol: "$", abbreviation: CurrencyEnums.usdAbbr.rawValue, balance: availableUsdBalance))
+    currencies.append(Currency(symbol: "€", abbreviation: CurrencyEnums.eurAbbr.rawValue, balance: availableEurBalance))
+    currencies.append(Currency(symbol: "¥", abbreviation: CurrencyEnums.jpyAbbr.rawValue, balance: availableJpyBalance))
+
+    return currencies
+  }
+
+  /// updates the message label with the desired text and color
+  /// - Parameter color: Color that the text will have
+  /// - .systemRed: Warning/Alert
+  /// - .systemGreen: Something positive/Success
+  /// - .systemOrange: General Info
+  func updateMessage(with text: String, color textColor: UIColor) {
+    DispatchQueue.main.async {
+      self.messageTitle.text = text
+      self.messageTitle.textColor = textColor
+    }
+  }
+  /// returns the fee user has to pay for this conversation
+  /// - Parameter amount: The amount that user exchange as "From"
+  func calculateFee(_ amount: Double) -> Double {
+    // we have a flat fee of 0.7 %
+    var fee = 0.007
+
+    // get the exchange count and adjust our fee according to that
+    // we could make every condition simple one liner, but for future refactoring
+    // seperate condition makes sense
+
+    // fee below 5 exchange is free
+    if userDefault.exchangeCount <= 5 {
+      fee = 0
+    } else if userDefault.exchangeCount % 10 == 0 {
+      // every 10th exchange is free
+      fee = 0
+    } else if userDefault.exchangeCount % 200 == 0 {
+      // every 200th exchange is free
+      fee = 0
+    }
+
+
+    return (amount * fee).round(to: 2)
+  }
+
+  /// adds the exchanged amount to the balance
+  func addExchangedAmount() {
+    if let exchangeItem = exchangeItem {
+      print("Adding")
+      let currencyToAdd = CurrencyEnums(rawValue: exchangeItem.currency)
+      switch currencyToAdd {
+      case .usdAbbr:
+        userDefault.usdBalance += Double(exchangeItem.amount) ?? 0
+      case .eurAbbr:
+        userDefault.eurBalance += Double(exchangeItem.amount) ?? 0
+      case .jpyAbbr:
+        userDefault.jpyBalance += Double(exchangeItem.amount) ?? 0
+      case .none:
+        print("None matched")
+        updateMessage(with: MessageType.anError.rawValue, color: .systemRed)
+      }
+    } else {
+      print("Exchange is nil")
+    }
+  }
+
+  /// deducts the amount we're exchangin from balance
+  func deductExchangingAmount() {
+    // how much in total to deduct
+    let totalAmountToDeduct = self.calculateFee(amountOfExchange) + amountOfExchange
+
+    let currencyToDeduct = CurrencyEnums(rawValue: fromCurrency)
+    switch currencyToDeduct {
+    case .usdAbbr:
+      userDefault.usdBalance -= totalAmountToDeduct
+    case .eurAbbr:
+      userDefault.eurBalance -= totalAmountToDeduct
+    case .jpyAbbr:
+      userDefault.jpyBalance -= totalAmountToDeduct
+    case .none:
+      print("None matched")
+      updateMessage(with: MessageType.anError.rawValue, color: .systemRed)
+    }
+  }
+
+  /// checks if user has any balance available for exchange
+  
 }

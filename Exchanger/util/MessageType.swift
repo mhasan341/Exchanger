@@ -12,4 +12,5 @@ enum MessageType: String {
   case readyAndWaiting = "Ready To Fire!"
   case sameCurrency = "Currencies must be different"
   case networkError = "Error with Network Response"
+  case anError = "An error occured while exchanging"
 }

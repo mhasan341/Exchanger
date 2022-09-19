@@ -35,4 +35,13 @@ extension UserDefaults {
       set(newValue, forKey: "jpyBalance")
     }
   }
+
+  @objc var exchangeCount: Int {
+    get {
+      return integer(forKey: "exchangeCount")
+    }
+    set {
+      set(newValue, forKey: "exchangeCount")
+    }
+  }
 }
