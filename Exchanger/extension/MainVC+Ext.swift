@@ -49,16 +49,17 @@ extension MainVC: UICollectionViewDelegate {
     scrollView.addSubview(contentView)
 
     NSLayoutConstraint.activate([
-      scrollView.topAnchor.constraint(equalTo: layoutGuide.topAnchor, constant: contentPadding),
-      scrollView.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: contentPadding),
-      scrollView.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -contentPadding),
-      scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+      scrollView.topAnchor.constraint(equalTo: layoutGuide.topAnchor),
+      scrollView.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor),
+      scrollView.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor),
+      scrollView.bottomAnchor.constraint(equalTo: layoutGuide.bottomAnchor),
 
       contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
       contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
       contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
       contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-      contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor)
+      contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+      contentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor)
     ])
   }
 
@@ -70,9 +71,9 @@ extension MainVC: UICollectionViewDelegate {
     collectionContentView.translatesAutoresizingMaskIntoConstraints = false
 
     NSLayoutConstraint.activate([
-      collectionContentView.topAnchor.constraint(equalTo: layoutGuide.topAnchor, constant: contentPadding),
-      collectionContentView.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: contentPadding),
-      collectionContentView.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -contentPadding),
+      collectionContentView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: contentPadding),
+      collectionContentView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: contentPadding),
+      collectionContentView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -contentPadding),
       collectionContentView.heightAnchor.constraint(equalToConstant: 150)
     ])
 
@@ -145,7 +146,7 @@ extension MainVC: UICollectionViewDelegate {
 
     NSLayoutConstraint.activate([
       exchangeTitle.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: contentPadding),
-      exchangeTitle.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: contentPadding)
+      exchangeTitle.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: contentPadding)
     ])
   }
 
@@ -157,7 +158,7 @@ extension MainVC: UICollectionViewDelegate {
 
     NSLayoutConstraint.activate([
       activityIndicator.topAnchor.constraint(equalTo: exchangeTitle.bottomAnchor, constant: contentPadding / 2),
-      activityIndicator.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -contentPadding)
+      activityIndicator.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -contentPadding)
     ])
   }
 
@@ -167,8 +168,8 @@ extension MainVC: UICollectionViewDelegate {
 
     NSLayoutConstraint.activate([
       messageTitle.topAnchor.constraint(equalTo: exchangeTitle.bottomAnchor, constant: contentPadding / 2),
-      messageTitle.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: contentPadding),
-      messageTitle.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -contentPadding)
+      messageTitle.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: contentPadding),
+      messageTitle.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -contentPadding)
     ])
     messageTitle.textAlignment = .center
     messageTitle.numberOfLines = 2
@@ -183,10 +184,10 @@ extension MainVC: UICollectionViewDelegate {
 
     NSLayoutConstraint.activate([
       fromLabel.topAnchor.constraint(equalTo: messageTitle.bottomAnchor, constant: contentPadding / 2),
-      fromLabel.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: contentPadding),
+      fromLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: contentPadding),
 
       fromCurrencyButton.topAnchor.constraint(equalTo: fromLabel.bottomAnchor, constant: 0),
-      fromCurrencyButton.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: contentPadding)
+      fromCurrencyButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: contentPadding)
     ])
   }
 
@@ -199,10 +200,10 @@ extension MainVC: UICollectionViewDelegate {
 
     NSLayoutConstraint.activate([
       toLabel.topAnchor.constraint(equalTo: messageTitle.bottomAnchor, constant: contentPadding / 2),
-      toLabel.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -contentPadding),
+      toLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -contentPadding),
 
       toCurrencyButton.topAnchor.constraint(equalTo: toLabel.bottomAnchor, constant: 0),
-      toCurrencyButton.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -contentPadding)
+      toCurrencyButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -contentPadding)
     ])
   }
 
@@ -264,8 +265,8 @@ extension MainVC: UICollectionViewDelegate {
 
     NSLayoutConstraint.activate([
       exchangeButton.topAnchor.constraint(equalTo: currencyAmountTF.bottomAnchor, constant: contentPadding / 2),
-      exchangeButton.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: contentPadding),
-      exchangeButton.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -contentPadding)
+      exchangeButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: contentPadding),
+      exchangeButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -contentPadding)
     ])
   }
 
