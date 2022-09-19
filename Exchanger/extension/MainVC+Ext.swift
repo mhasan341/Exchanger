@@ -130,7 +130,7 @@ extension MainVC: UICollectionViewDelegate {
     NSLayoutConstraint.activate([
       messageTitle.topAnchor.constraint(equalTo: exchangeTitle.bottomAnchor, constant: contentPadding / 2),
       messageTitle.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: contentPadding),
-      messageTitle.trailingAnchor.constraint(equalTo: activityIndicator.leadingAnchor, constant: -contentPadding)
+      messageTitle.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -contentPadding)
     ])
     messageTitle.textAlignment = .center
     messageTitle.numberOfLines = 2

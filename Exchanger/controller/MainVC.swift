@@ -86,18 +86,13 @@ class MainVC: UIViewController {
   var currencyAmount: AnyPublisher<Double, Never> {
     return $amountOfExchange.map { value in
       guard value > 0 else {
-        DispatchQueue.main.async {
-          self.messageTitle.text = "Ready!"
-          self.messageTitle.textColor = .systemOrange
+        self.updateMessage(with: MessageType.ready.rawValue, color: .systemOrange)
           self.activityPublisher.send(false)
-        }
+
         return 0
       }
 
-      DispatchQueue.main.async {
-        self.messageTitle.text = "Ready to fire!"
-        self.messageTitle.textColor = .systemOrange
-      }
+      self.updateMessage(with: MessageType.readyAndWaiting.rawValue, color: .systemOrange)
 
       return value
     }
@@ -136,21 +131,14 @@ class MainVC: UIViewController {
       .map { tuple in
         self.fromCurrency = tuple.1
         self.toCurrency = tuple.2
-        print(tuple.1, tuple.2)
+
         if tuple.1 == tuple.2 {
           print("Same Currency")
-          DispatchQueue.main.async {
-            self.messageTitle.text = "Both Currency Can't Be Same"
-            self.messageTitle.textColor = .systemYellow
-          }
+          self.updateMessage(with: MessageType.sameCurrency.rawValue, color: .systemRed)
           return 0.0
         } else {
-          DispatchQueue.main.async {
-            self.messageTitle.text = "Ready!"
-            self.messageTitle.textColor = .systemOrange
-          }
+          self.updateMessage(with: MessageType.ready.rawValue, color: .systemOrange)
         }
-
 
         return tuple.0
       }
@@ -257,10 +245,7 @@ class MainVC: UIViewController {
       })
       .tryMap { output -> Data in
         guard let httpResponse = output.response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-          DispatchQueue.main.async {
-            self.messageTitle.text = "Error with Network Response"
-            self.messageTitle.textColor = .systemRed
-          }
+          self.updateMessage(with: MessageType.networkError.rawValue, color: .systemRed)
           self.activityPublisher.send(false)
           throw URLError(.badServerResponse)
         }
@@ -271,10 +256,7 @@ class MainVC: UIViewController {
         $0
       }
       .map { exchange in
-        DispatchQueue.main.async {
-          self.messageTitle.text = "\(amount) \(self.fromCurrency) = \(exchange.amount) \(self.toCurrency)"
-          self.messageTitle.textColor = .systemGreen
-        }
+        self.updateMessage(with: "You'll receive \(exchange.amount) \(exchange.currency) for \(amount) \(input)", color: .systemGreen)
       }
       .sink { _ in
         print("Done")
@@ -300,5 +282,16 @@ class MainVC: UIViewController {
     currencies.append(Currency(symbol: "¥", abbreviation: "JPY", balance: availableJpyBalance))
 
     return currencies
+  }
+
+  /// updates the message label with the desired text and color
+  /// Red: Warning/Alert
+  /// Green: Something positive/Success
+  /// Orange: General Info
+  func updateMessage(with text: String, color textColor: UIColor) {
+    DispatchQueue.main.async {
+      self.messageTitle.text = text
+      self.messageTitle.textColor = textColor
+    }
   }
 }
