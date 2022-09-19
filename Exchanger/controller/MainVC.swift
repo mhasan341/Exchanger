@@ -10,6 +10,7 @@ import Combine
 
 class MainVC: UIViewController {
   // swiftlint:disable implicitly_unwrapped_optional
+  // MARK: UI Elements
   // Stores my balance cards
   var collectionView: UICollectionView!
   var dataSource: UICollectionViewDiffableDataSource<Section, Currency>!
@@ -19,23 +20,17 @@ class MainVC: UIViewController {
   var exchangeButton: UIButton!
   // just an ordinary activity indicator
   var activityIndicator: UIActivityIndicatorView!
+  // helps reducing line limit
   var layoutGuide: UILayoutGuide!
   // swiftlint:enable implicitly_unwrapped_optional
-  // Currencies the app supports
-  var availableCurrencies = Utils.availableCurrencies()
-  // to store our cancellables
-  private var cancellables = Set<AnyCancellable>()
-  // to update our activity indicator
-  var activityPublisher = PassthroughSubject<Bool, Never>()
-
   /// title for second section
   let exchangeTitle = TitleLabel(size: 20)
   let messageTitle = TitleLabel(size: 14, color: .systemOrange)
-  /// button for the from menu
+  /// button for the from menu, EUR as default
   lazy var fromCurrencyButton: UIButton = {
     let button = UIButton(frame: .zero)
     button.translatesAutoresizingMaskIntoConstraints = false
-    button.setTitle(availableCurrencies[0].abbreviation, for: .normal)
+    button.setTitle(myCurrencies[1].abbreviation, for: .normal)
     button.showsMenuAsPrimaryAction = true
     button.menu = UIMenu(children: fromMenuAction())
     button.setTitleColor(UIColor.black, for: .normal)
@@ -43,11 +38,11 @@ class MainVC: UIViewController {
     return button
   }()
 
-  /// button for the to menu
+  /// button for the to menu, USD as default
   lazy var toCurrencyButton: UIButton = {
     let button = UIButton(frame: .zero)
     button.translatesAutoresizingMaskIntoConstraints = false
-    button.setTitle(availableCurrencies[1].abbreviation, for: .normal)
+    button.setTitle(myCurrencies[0].abbreviation, for: .normal)
     button.showsMenuAsPrimaryAction = true
     button.menu = UIMenu(children: toMenuActions())
     button.setTitleColor(UIColor.black, for: .normal)
@@ -58,17 +53,34 @@ class MainVC: UIViewController {
   let fromArrowIv = UIImageView(image: UIImage(systemName: "chevron.down"))
   let toArrowIv = UIImageView(image: UIImage(systemName: "chevron.down"))
 
+  // MARK: Combine
+
+  // to store our cancellables
+  private var cancellables = Set<AnyCancellable>()
+  // to update our activity indicator
+  var activityPublisher = PassthroughSubject<Bool, Never>()
   /// to store the value of "From"
   ///  Using USD as the initial, since we'll have at least two currency to exchange
-  @Published var fromCurrency: String = "USD"
+  @Published var fromCurrency: String = "EUR"
   /// to store the value of "To"
   ///  Using EUR as the second, since we'll have at least two currency to exchange
-  @Published var toCurrency: String = "EUR"
+  @Published var toCurrency: String = "USD"
   /// to store the currencyAmount user inputed on our TF
   @Published var amountOfExchange: Double = 0
 
+  /// holds our current balances
+  /// add new currency here later
+  @Published var availableUsdBalance: Double = 0
+  @Published var availableEurBalance: Double = 0
+  @Published var availableJpyBalance: Double = 0
+
+  // MARK: Everything else
   /// Constant for padding/margining views
   let contentPadding: CGFloat = 20
+  // Currencies the app supports
+  lazy var myCurrencies = availableCurrencies()
+  // user default for managing balance and update
+  let userDefault = UserDefaults.standard
 
   /// validates our currency input and updates the UI according to the value
   var currencyAmount: AnyPublisher<Double, Never> {
@@ -101,18 +113,45 @@ class MainVC: UIViewController {
     /// Sets the whole layout
     doInitialSetup()
 
-    /// Test UD
-    UDManager.saveBalance(1000, for: "EUR")
-    UserDefaults.standard.publisher(for: "EUR").sink { ud in
-      print(ud.double(forKey: "EUR"))
+    /// Check if it's first run and save the initial balance
+    if !userDefault.bool(forKey: "first_run_done") {
+      userDefault.set(true, forKey: "first_run_done")
+      userDefault.eurBalance = 1000
     }
 
+
+    // To update the Collection view on these balance change
+    setEurBalancePublisher()
+    setUsdBalancePublisher()
+
     // To update the message label when amount or currency changes
+    setCurrencyAmountPublisher()
+    // State of our network call
+    setActivityPublisher()
+  }
+
+  func setCurrencyAmountPublisher() {
     currencyAmount
       .combineLatest($fromCurrency, $toCurrency)
       .map { tuple in
         self.fromCurrency = tuple.1
         self.toCurrency = tuple.2
+        print(tuple.1, tuple.2)
+        if tuple.1 == tuple.2 {
+          print("Same Currency")
+          DispatchQueue.main.async {
+            self.messageTitle.text = "Both Currency Can't Be Same"
+            self.messageTitle.textColor = .systemYellow
+          }
+          return 0.0
+        } else {
+          DispatchQueue.main.async {
+            self.messageTitle.text = "Ready!"
+            self.messageTitle.textColor = .systemOrange
+          }
+        }
+
+
         return tuple.0
       }
       .debounce(for: .milliseconds(1000), scheduler: RunLoop.main)
@@ -136,8 +175,54 @@ class MainVC: UIViewController {
         print("Call Done from Currency Amount")
       }
       .store(in: &self.cancellables)
+  }
 
-    // to show status
+  /// EUR
+  func setEurBalancePublisher() {
+    userDefault
+      .publisher(for: \.eurBalance)
+      .removeDuplicates()
+      .map { currentValue in
+        // Return the value if it's greater than 0, else returns 0
+        // a caution against neg values
+        currentValue > 0 ? currentValue : 0
+      }
+      .sink { value in
+        self.availableEurBalance = value
+        if let row = self.myCurrencies.firstIndex(where: {$0.abbreviation == "EUR"}) {
+          let newItem = Currency(symbol: self.myCurrencies[row].symbol, abbreviation: self.myCurrencies[row].abbreviation, balance: value.round(to: 2))
+          self.myCurrencies[row] = newItem
+        }
+
+        self.updateCollectionView()
+      }
+      .store(in: &cancellables)
+  }
+
+  /// USD
+  func setUsdBalancePublisher() {
+    userDefault
+      .publisher(for: \.usdBalance)
+      .removeDuplicates()
+      .map { currentValue in
+        // Return the value if it's greater than 0, else returns 0
+        // a caution against neg values
+        currentValue > 0 ? currentValue : 0
+      }
+      .sink { value in
+        self.availableUsdBalance = value
+        if let row = self.myCurrencies.firstIndex(where: {$0.abbreviation == "USD"}) {
+          let newItem = Currency(symbol: self.myCurrencies[row].symbol, abbreviation: self.myCurrencies[row].abbreviation, balance: value.round(to: 2))
+          self.myCurrencies[row] = newItem
+        }
+
+        self.updateCollectionView()
+      }
+      .store(in: &cancellables)
+  }
+
+  /// to show status
+  func setActivityPublisher() {
     activityPublisher
       .receive(on: RunLoop.main)
       .sink { isWorking in
@@ -154,9 +239,8 @@ class MainVC: UIViewController {
   func updateCollectionView() {
     var snapshot = NSDiffableDataSourceSnapshot<Section, Currency>()
     snapshot.appendSections([Section(title: Utils.balanceSection)])
-    snapshot.appendItems(availableCurrencies, toSection: Section(title: Utils.balanceSection))
-
-    dataSource.apply(snapshot, animatingDifferences: true, completion: nil)
+    snapshot.appendItems(myCurrencies, toSection: Section(title: Utils.balanceSection))
+    dataSource.apply(snapshot, animatingDifferences: true)
   }
 
   func exchangeCurrencyOf(_ amount: Double, from input: String, to output: String) {
@@ -206,5 +290,15 @@ class MainVC: UIViewController {
 
   @objc func textFieldChanged() {
     amountOfExchange = Double(currencyAmountTF.text ?? "0") ?? 0.0
+  }
+
+  /// creates currency symbol, initial balance, and abbr
+  func availableCurrencies() -> [Currency] {
+    var currencies: [Currency] = []
+    currencies.append(Currency(symbol: "$", abbreviation: "USD", balance: availableUsdBalance))
+    currencies.append(Currency(symbol: "€", abbreviation: "EUR", balance: availableEurBalance))
+    currencies.append(Currency(symbol: "¥", abbreviation: "JPY", balance: availableJpyBalance))
+
+    return currencies
   }
 }

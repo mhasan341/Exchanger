@@ -7,12 +7,25 @@
 
 import Foundation
 
-struct Currency: Hashable {
+class Currency: Hashable {
   let symbol: String
   let abbreviation: String
-  let balance: Int
+  @Published var balance: Double
+
+  init(symbol: String, abbreviation: String, balance: Double) {
+    self.symbol = symbol
+    self.abbreviation = abbreviation
+    self.balance = balance
+  }
 
   func hash(into hasher: inout Hasher) {
-    hasher.combine(abbreviation)
+    hasher.combine(identifier)
+    hasher.combine(identifier)
   }
+
+  static func == (lhs: Currency, rhs: Currency) -> Bool {
+    return lhs.identifier == rhs.identifier && lhs.balance == rhs.balance
+  }
+
+  private let identifier = UUID()
 }

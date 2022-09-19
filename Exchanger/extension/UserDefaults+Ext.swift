@@ -35,5 +35,4 @@ extension UserDefaults {
       set(newValue, forKey: "jpyBalance")
     }
   }
-
 }

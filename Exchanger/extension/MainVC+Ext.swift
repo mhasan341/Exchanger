@@ -75,8 +75,8 @@ extension MainVC: UICollectionViewDelegate {
     // swiftlint:disable line_length
     dataSource = UICollectionViewDiffableDataSource<Section, Currency>(collectionView: collectionView) { collectionView, indexPath, item in
       guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BalanceCardCell.reuseID, for: indexPath) as? BalanceCardCell else {fatalError("Error dequeueing cell")}
-
-      cell.set(self.availableCurrencies[indexPath.item])
+      print("Updating Cell")
+      cell.set(item)
       return cell
     }
     // swiftlint:enable line_length
@@ -233,7 +233,7 @@ extension MainVC: UICollectionViewDelegate {
   /// Actinos for the "From" Dropdown
   func fromMenuAction() -> [UIAction] {
     var collection: [UIAction] = []
-    for item in availableCurrencies {
+    for item in myCurrencies {
       collection.append(UIAction(title: item.abbreviation, state: .off) { action in
         self.fromCurrency = action.title
         self.fromCurrencyButton.setTitle(action.title, for: .normal)
@@ -245,7 +245,7 @@ extension MainVC: UICollectionViewDelegate {
   /// Actinos for the "To" Dropdown
   func toMenuActions() -> [UIAction] {
     var collection: [UIAction] = []
-    for item in availableCurrencies {
+    for item in myCurrencies {
       collection.append(UIAction(title: item.abbreviation, state: .off) { action in
         self.toCurrency = action.title
         self.toCurrencyButton.setTitle(action.title, for: .normal)

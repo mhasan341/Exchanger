@@ -58,6 +58,7 @@ class BalanceCardCell: UICollectionViewCell {
 
   /// Sets the values of this cell
   func set(_ item: Currency) {
+    print("Setting balance to \(item.balance)")
     symbolLabel.text = item.symbol
     abbrLabel.text = item.abbreviation
     balanceLabel.text = "\(item.balance)"
