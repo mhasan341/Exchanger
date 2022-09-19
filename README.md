@@ -1,6 +1,10 @@
 # Exchanger
-Swift app to convert currencies
 
+<p align="center">
+  <kbd><img height="400" src="https://github.com/mhasan341/GithubGeeks-Swift-ProUI/blob/main/banner.jpg"></kbd>
+  </p>
+  
+  Swift app to convert currencies
 ## What's Special
 - Swift Reactive Programming using Combine Framework
 - 100% Programmatic UI
