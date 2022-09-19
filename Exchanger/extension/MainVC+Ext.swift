@@ -11,6 +11,8 @@ extension MainVC: UICollectionViewDelegate {
   /// calls different functions that lays out the layout of the app
   func doInitialSetup() {
     layoutGuide = view.safeAreaLayoutGuide
+    // scrollView for the whole screen
+    configureScrollView()
     // collectionView for the balance cards
     configureCollectionView()
     // data source for the collectionView
@@ -34,27 +36,55 @@ extension MainVC: UICollectionViewDelegate {
     // configure the exchange button
     configureExhangeButton()
   }
-  /// CollectionView that holds the balance cards
-  func configureCollectionView() {
-    let contentView = UIView()
-    view.addSubview(contentView)
 
+  // the scrollview
+  func configureScrollView() {
+    // a scrollView
+    let scrollView = UIScrollView()
+    view.addSubview(scrollView)
+
+    scrollView.translatesAutoresizingMaskIntoConstraints = false
     contentView.translatesAutoresizingMaskIntoConstraints = false
 
+    scrollView.addSubview(contentView)
+
     NSLayoutConstraint.activate([
-      contentView.topAnchor.constraint(equalTo: layoutGuide.topAnchor, constant: contentPadding),
-      contentView.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: contentPadding),
-      contentView.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -contentPadding),
-      contentView.heightAnchor.constraint(equalToConstant: 150)
+      scrollView.topAnchor.constraint(equalTo: layoutGuide.topAnchor, constant: contentPadding),
+      scrollView.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: contentPadding),
+      scrollView.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -contentPadding),
+      scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+
+      contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+      contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+      contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
+      contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+      contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor)
+    ])
+  }
+
+  /// CollectionView that holds the balance cards
+  func configureCollectionView() {
+    let collectionContentView = UIView()
+    contentView.addSubview(collectionContentView)
+
+    collectionContentView.translatesAutoresizingMaskIntoConstraints = false
+
+    NSLayoutConstraint.activate([
+      collectionContentView.topAnchor.constraint(equalTo: layoutGuide.topAnchor, constant: contentPadding),
+      collectionContentView.leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor, constant: contentPadding),
+      collectionContentView.trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor, constant: -contentPadding),
+      collectionContentView.heightAnchor.constraint(equalToConstant: 150)
     ])
 
 
     // invalidate the frames
-    contentView.layoutIfNeeded()
+    collectionContentView.layoutIfNeeded()
 
-    collectionView = UICollectionView(frame: contentView.bounds, collectionViewLayout: Utils.createBalanceCardLayout())
+    collectionView = UICollectionView(
+      frame: collectionContentView.bounds,
+      collectionViewLayout: Utils.createBalanceCardLayout())
 
-    contentView.addSubview(collectionView)
+    collectionContentView.addSubview(collectionView)
 
     collectionView.autoresizingMask = .flexibleHeight
 
@@ -110,7 +140,7 @@ extension MainVC: UICollectionViewDelegate {
 
   /// Adds the title to view
   func configureExchangeTitle() {
-    view.addSubview(exchangeTitle)
+    contentView.addSubview(exchangeTitle)
     exchangeTitle.text = "Currency Exchange"
 
     NSLayoutConstraint.activate([
@@ -122,7 +152,7 @@ extension MainVC: UICollectionViewDelegate {
   /// Displays our activity status
   func configureActivityIndicator() {
     activityIndicator = UIActivityIndicatorView()
-    view.addSubview(activityIndicator)
+    contentView.addSubview(activityIndicator)
     activityIndicator.translatesAutoresizingMaskIntoConstraints = false
 
     NSLayoutConstraint.activate([
@@ -133,7 +163,7 @@ extension MainVC: UICollectionViewDelegate {
 
   /// Adds a Message Label that'll display different status
   func configureMessageTitle() {
-    view.addSubview(messageTitle)
+    contentView.addSubview(messageTitle)
 
     NSLayoutConstraint.activate([
       messageTitle.topAnchor.constraint(equalTo: exchangeTitle.bottomAnchor, constant: contentPadding / 2),
@@ -147,9 +177,9 @@ extension MainVC: UICollectionViewDelegate {
   /// Adds the from dropdown currency selector
   func configureFromButton() {
     let fromLabel = SecondaryTitleLabel(size: 14)
-    view.addSubview(fromLabel)
+    contentView.addSubview(fromLabel)
     fromLabel.text = "From"
-    view.addSubview(fromCurrencyButton)
+    contentView.addSubview(fromCurrencyButton)
 
     NSLayoutConstraint.activate([
       fromLabel.topAnchor.constraint(equalTo: messageTitle.bottomAnchor, constant: contentPadding / 2),
@@ -163,9 +193,9 @@ extension MainVC: UICollectionViewDelegate {
   /// Adds the from dropdown currency selector
   func configureToButton() {
     let toLabel = SecondaryTitleLabel(size: 14)
-    view.addSubview(toLabel)
+    contentView.addSubview(toLabel)
     toLabel.text = "To"
-    view.addSubview(toCurrencyButton)
+    contentView.addSubview(toCurrencyButton)
 
     NSLayoutConstraint.activate([
       toLabel.topAnchor.constraint(equalTo: messageTitle.bottomAnchor, constant: contentPadding / 2),
@@ -177,8 +207,8 @@ extension MainVC: UICollectionViewDelegate {
   }
 
   func configureArrowImages() {
-    view.addSubview(fromArrowIv)
-    view.addSubview(toArrowIv)
+    contentView.addSubview(fromArrowIv)
+    contentView.addSubview(toArrowIv)
 
     fromArrowIv.translatesAutoresizingMaskIntoConstraints = false
     toArrowIv.translatesAutoresizingMaskIntoConstraints = false
@@ -197,7 +227,7 @@ extension MainVC: UICollectionViewDelegate {
 
   func configureInputTF() {
     currencyAmountTF = UITextField()
-    view.addSubview(currencyAmountTF)
+    contentView.addSubview(currencyAmountTF)
     currencyAmountTF.translatesAutoresizingMaskIntoConstraints = false
 
     currencyAmountTF.layer.borderColor = UIColor.systemGray.cgColor
@@ -222,7 +252,7 @@ extension MainVC: UICollectionViewDelegate {
 
   func configureExhangeButton() {
     exchangeButton = UIButton()
-    view.addSubview(exchangeButton)
+    contentView.addSubview(exchangeButton)
     exchangeButton.translatesAutoresizingMaskIntoConstraints = false
 
     exchangeButton.setTitle("Exchange", for: .normal)

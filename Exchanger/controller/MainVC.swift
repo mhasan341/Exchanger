@@ -11,6 +11,8 @@ import Combine
 class MainVC: UIViewController {
   // swiftlint:disable implicitly_unwrapped_optional
   // MARK: UI Elements
+  // to host the scrollview
+  let contentView = UIView()
   // Stores my balance cards
   var collectionView: UICollectionView!
   var dataSource: UICollectionViewDiffableDataSource<Section, Currency>!
