@@ -1,7 +1,7 @@
 # Exchanger
 
 <p align="center">
-  <kbd><img height="400" src="https://github.com/mhasan341/GithubGeeks-Swift-ProUI/blob/main/banner.jpg"></kbd>
+  <kbd><img height="400" src="https://github.com/mhasan341/Exchanger/blob/main/exchangerBanner.jpg"></kbd>
   </p>
   
   Swift app to convert currencies
