@@ -239,49 +239,6 @@ class MainVC: UIViewController {
       .store(in: &self.cancellables)
   }
 
-  private func registerNotifications() {
-    NotificationCenter.default.addObserver(self,
-                                           selector: #selector(keyboardWillShow),
-                                           name: UIResponder.keyboardWillShowNotification,
-                                           object: nil)
-    NotificationCenter.default.addObserver(self,
-                                           selector: #selector(keyboardWillHide),
-                                           name: UIResponder.keyboardWillHideNotification,
-                                           object: nil)
-  }
-
-  @objc private func keyboardWillShow(notification: NSNotification) {
-    guard let keyboardFrame = notification.userInfo![UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
-    scrollView.contentInset.bottom = view.convert(keyboardFrame.cgRectValue, from: nil).size.height
-  }
-
-  @objc private func keyboardWillHide(notification: NSNotification) {
-    scrollView.contentInset.bottom = 0
-  }
-
-  // MARK: UI Events
-
-  @objc func exchangeButtonDidTapped(_ sender: UIButton) {
-    if exchangeItem != nil {
-      // add the exchanged amount
-      addExchangedAmount()
-
-      // deduct the balance we're exchanging
-      deductExchangingAmount()
-
-      // update the exchange count
-      userDefault.exchangeCount += 1
-
-      // reset everything
-      currencyAmountTF.text = ""
-      amountOfExchange = 0
-    }
-  }
-
-  @objc func textFieldChanged() {
-    amountOfExchange = Double(currencyAmountTF.text ?? "0") ?? 0.0
-  }
-
   // MARK: Add New Currencies Here
 
   /// EUR
