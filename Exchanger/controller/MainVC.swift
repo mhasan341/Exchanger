@@ -129,6 +129,8 @@ class MainVC: UIViewController {
     setActivityPublisher()
     // to handle keyboard
     registerNotifications()
+    // register keyboard hide on outside touch
+    hideKeyboardOnOutsideTouch()
   }
 
   func setCurrencyAmountPublisher() {

@@ -29,6 +29,7 @@
 		51AF612528D1CD8D003DCBC6 /* SecondaryTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AF612428D1CD8D003DCBC6 /* SecondaryTitleLabel.swift */; };
 		51AF612A28D1CFB7003DCBC6 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AF612928D1CFB7003DCBC6 /* Currency.swift */; };
 		51C29FB328D91B780057F553 /* exchangerBanner.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 51C29FB228D91B780057F553 /* exchangerBanner.jpg */; };
+		51C4673E28D97E03004CA013 /* UIViewController+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C4673D28D97E03004CA013 /* UIViewController+Ext.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		51AF612428D1CD8D003DCBC6 /* SecondaryTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryTitleLabel.swift; sourceTree = "<group>"; };
 		51AF612928D1CFB7003DCBC6 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
 		51C29FB228D91B780057F553 /* exchangerBanner.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = exchangerBanner.jpg; sourceTree = "<group>"; };
+		51C4673D28D97E03004CA013 /* UIViewController+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Ext.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +79,7 @@
 				510AC55A28D62B290071B93E /* UITextField+Ext.swift */,
 				510D3AEC28D78BBC007A21E3 /* UserDefaults+Ext.swift */,
 				510D3AEE28D7A39D007A21E3 /* Double+Ext.swift */,
+				51C4673D28D97E03004CA013 /* UIViewController+Ext.swift */,
 			);
 			path = extension;
 			sourceTree = "<group>";
@@ -265,6 +268,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51C4673E28D97E03004CA013 /* UIViewController+Ext.swift in Sources */,
 				5155C7FA28D3BBFA00E0A263 /* BalanceSectionHeaderView.swift in Sources */,
 				51AF612528D1CD8D003DCBC6 /* SecondaryTitleLabel.swift in Sources */,
 				510D3AEF28D7A39D007A21E3 /* Double+Ext.swift in Sources */,
