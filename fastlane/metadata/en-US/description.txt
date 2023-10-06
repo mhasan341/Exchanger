@@ -1,0 +1,2 @@
+This is the description text for Exchanger App under en_US folder
+

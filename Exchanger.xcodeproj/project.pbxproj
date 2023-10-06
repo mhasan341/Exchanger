@@ -71,6 +71,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		511AFEE22ACF879300D76C5F /* test */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = test;
+			sourceTree = "<group>";
+		};
 		5155C7F028D3959F00E0A263 /* extension */ = {
 			isa = PBXGroup;
 			children = (
@@ -104,6 +111,7 @@
 		51AF610428D1970B003DCBC6 /* Exchanger */ = {
 			isa = PBXGroup;
 			children = (
+				511AFEE22ACF879300D76C5F /* test */,
 				510D3AF628D913C5007A21E3 /* README.md */,
 				5155C7F028D3959F00E0A263 /* extension */,
 				51AF612B28D1D006003DCBC6 /* util */,

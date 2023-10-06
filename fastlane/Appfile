@@ -1,0 +1,7 @@
+app_identifier("me.mahmudulhasan.Exchanger") # The bundle identifier of your app
+apple_id("mhasan.csbrur@gmail.com") # Your Apple Developer Portal username
+app_name("Exchanger-Fastlane")
+itc_team_name("Md. Mahmudul Hasan")
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile
